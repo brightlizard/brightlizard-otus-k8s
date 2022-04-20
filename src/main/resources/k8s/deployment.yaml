@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: brightlizard-otus-k8s-app-deployment
+  labels:
+    app: brightlizard-otus-k8s-app
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: brightlizard-otus-k8s-app
+  template:
+    metadata:
+      labels:
+        app: brightlizard-otus-k8s-app
+    spec:
+      containers:
+        - name: brightlizard-otus-k8s-app
+          image: brightlizard/brightlizard-otus-k8s-app:1.0.0
+          ports:
+            - containerPort: 8000
