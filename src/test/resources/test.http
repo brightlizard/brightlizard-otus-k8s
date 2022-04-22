@@ -1,1 +1,7 @@
 GET http://localhost:8000/health
+
+###
+GET http://localhost:8000/health/off
+
+###
+GET http://localhost:8000/health/on

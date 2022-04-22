@@ -16,6 +16,24 @@ spec:
     spec:
       containers:
         - name: brightlizard-otus-k8s-app
-          image: brightlizard/brightlizard-otus-k8s-app:1.0.0
+          image: brightlizard/brightlizard-otus-k8s-app:1.0.1
           ports:
             - containerPort: 8000
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - '-c'
+                - curl -s --fail http://localhost:8000/health > /dev/null
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            timeoutSeconds: 60
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - '-c'
+                - curl -s --fail http://localhost:8000/health > /dev/null
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            timeoutSeconds: 60
