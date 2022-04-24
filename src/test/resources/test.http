@@ -5,3 +5,17 @@ GET http://localhost:8000/health/off
 
 ###
 GET http://localhost:8000/health/on
+
+###
+GET http://localhost:8000/user
+Content-Type: application/json
+
+{
+  "id": 1,
+  "username": "bob",
+  "firstName": "Bob",
+  "lastName": "Uncle",
+  "email": "somemail@mail.com",
+  "phone": "+7(495)372-21-83"
+}
+
