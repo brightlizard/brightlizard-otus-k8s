@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: brightlizard-otus-k8s-app-config
+data:
+  # property-like keys; each key maps to a simple value
+  spring.datasource.url: jdbc:postgresql://10.99.135.113:5432/otus
+
+  # file-like keys
+  init.sql: |
+    DROP TABLE IF EXISTS public.users;
+    CREATE TABLE IF NOT EXISTS public.users (
+        id VARCHAR PRIMARY KEY,
+        username VARCHAR NOT NULL,
+        firstName VARCHAR NOT NULL,
+        lastName VARCHAR NOT NULL,
+        email VARCHAR NOT NULL,
+        phone VARCHAR NOT NULL,
+        UNIQUE (username, email)
+    )

@@ -16,7 +16,10 @@ spec:
     spec:
       containers:
         - name: brightlizard-otus-k8s-app
-          image: brightlizard/brightlizard-otus-k8s-app:1.0.1
+          image: brightlizard/brightlizard-otus-k8s-app:1.0.2
+          envFrom:
+            - configMapRef:
+                name: brightlizard-otus-k8s-app-config
           ports:
             - containerPort: 8000
           readinessProbe:
@@ -37,3 +40,14 @@ spec:
             initialDelaySeconds: 20
             periodSeconds: 5
             timeoutSeconds: 60
+          volumeMounts:
+            - name: init-db
+              mountPath: "/db"
+              readOnly: true
+      volumes:
+        - name: init-db
+          configMap:
+            name: brightlizard-otus-k8s-app-config
+            items:
+              - key: "init.sql"
+                path: "init.sql"

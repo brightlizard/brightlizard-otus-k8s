@@ -7,15 +7,36 @@ GET http://localhost:8000/health/off
 GET http://localhost:8000/health/on
 
 ###
-GET http://localhost:8000/user
+#POST http://localhost:8000/user
+POST http://arch.homework/user
 Content-Type: application/json
 
 {
-  "id": 1,
   "username": "bob",
   "firstName": "Bob",
   "lastName": "Uncle",
   "email": "somemail@mail.com",
   "phone": "+7(495)372-21-83"
 }
+
+###
+#GET http://localhost:8000/user/1
+GET http://arch.homework/user/1
+Content-Type: application/json
+
+###
+PUT http://localhost:8000/user/3
+Content-Type: application/json
+
+{
+  "username": "bob2",
+  "firstName": "Bob2",
+  "lastName": "Uncle2",
+  "email": "somemail@mail.com",
+  "phone": "+7(495)372-21-83"
+}
+
+###
+DELETE http://localhost:8000/user/2
+Content-Type: application/json
 

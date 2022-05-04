@@ -1,3 +1,20 @@
 server:
   port: 8000
 
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:31798/otus
+    username: postgres
+    password: postgres
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5
+    initialization-mode: always
+  jpa:
+    hibernate:
+      show-sql: true
+      ddl-auto: create
+  sql:
+    init:
+      mode: always
+      schema-locations: db/init.sql

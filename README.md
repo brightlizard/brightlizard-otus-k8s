@@ -1,8 +1,8 @@
 # brightlizard-otus-k8s
 https://github.com/schetinnikov-otus/arch-labs
 
-docker build -t brightlizard-otus-k8s-app:1.0.1 .
-docker run -p 8080:8080 brightlizard-otus-k8s-app:1.0.1
+sudo docker build -t brightlizard/brightlizard-otus-k8s-app:1.0.2 .
+sudo docker run -p 8080:8080 brightlizard-otus-k8s-app:1.0.2
 
 sudo kubectl create ns otus
 sudo kubectl config set-context --current --namespace otus

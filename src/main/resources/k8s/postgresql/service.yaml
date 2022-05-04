@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres
+  name: brightlizard-otus-k8s-app-postgres-nodeport
   labels:
     app: postgres
 spec:
@@ -10,3 +10,17 @@ spec:
     - port: 5432
   selector:
     app: postgres
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: brightlizard-otus-k8s-app-service-postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
