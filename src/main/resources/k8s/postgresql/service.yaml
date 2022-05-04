@@ -20,6 +20,7 @@ metadata:
 spec:
   selector:
     app: postgres
+  type: CLusterIP
   ports:
     - protocol: TCP
       port: 5432

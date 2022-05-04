@@ -5,7 +5,7 @@ metadata:
   labels:
     app: brightlizard-otus-k8s-app
 spec:
-  replicas: 10
+  replicas: 1
   selector:
     matchLabels:
       app: brightlizard-otus-k8s-app
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: brightlizard-otus-k8s-app
-          image: brightlizard/brightlizard-otus-k8s-app:1.0.2
+          image: brightlizard/brightlizard-otus-k8s-app:1.0.3
           envFrom:
             - configMapRef:
                 name: brightlizard-otus-k8s-app-config

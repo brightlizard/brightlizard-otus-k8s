@@ -1,6 +1,12 @@
 server:
   port: 8000
 
+logging:
+  level:
+    root: ERROR
+    org.springframework.web: ERROR
+    net.brightlizard: DEBUG
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:31798/otus
