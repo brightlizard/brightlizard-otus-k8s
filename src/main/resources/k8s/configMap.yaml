@@ -4,7 +4,7 @@ metadata:
   name: brightlizard-otus-k8s-app-config
 data:
   # property-like keys; each key maps to a simple value
-  spring.datasource.url: jdbc:postgresql://10.99.135.113:5432/otus
+  spring.datasource.url: jdbc:postgresql://brightlizard-otus-k8s-app-service-postgres.otus.svc.cluster.local:5432/otus
   logging.level.net.brightlizard: DEBUG
 
   # file-like keys
