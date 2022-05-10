@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "otus-app.fullname" . }}-config
+data:
+  # property-like keys; each key maps to a simple value
+  spring.datasource.url: {{ .Values.springDatasourceUrl }}
+  spring.datasource.username: postgres2
+  spring.datasource.password: postgres2
+  logging.level.net.brightlizard: DEBUG
+
+  # file-like keys
+  init.sql: |
+    DROP TABLE IF EXISTS public.users;
+    CREATE TABLE IF NOT EXISTS public.users (
+        id VARCHAR PRIMARY KEY,
+        username VARCHAR NOT NULL,
+        firstName VARCHAR NOT NULL,
+        lastName VARCHAR NOT NULL,
+        email VARCHAR NOT NULL,
+        phone VARCHAR NOT NULL,
+        UNIQUE (username, email)
+    )
