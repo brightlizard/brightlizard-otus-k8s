@@ -8,7 +8,7 @@ image:
   repository: brightlizard/brightlizard-otus-k8s-app
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.0.3"
+  tag: "1.1.2"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -94,4 +94,8 @@ postgresql:
   postgresqlDatabase: otus
   service:
     port: "5432"
+
+metrics:
+  serviceMonitor:
+    enabled: true
 

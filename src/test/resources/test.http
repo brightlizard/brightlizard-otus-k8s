@@ -42,3 +42,11 @@ Content-Type: application/json
 DELETE http://arch.homework.helm/user/2
 Content-Type: application/json
 
+###
+GET http://localhost:8000/actuator
+
+###
+GET http://localhost:8000/actuator/health
+
+###
+GET http://localhost:8000/metrics

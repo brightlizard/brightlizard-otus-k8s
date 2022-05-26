@@ -9,9 +9,9 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:31798/otus
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://10.105.150.202:5432/otus
+    username: postgres2
+    password: postgres2
     hikari:
       connectionTimeout: 20000
       maximumPoolSize: 5
@@ -24,3 +24,20 @@ spring:
     init:
       mode: always
       schema-locations: db/init.sql
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info,prometheus
+      base-path: /
+      path-mapping:
+        prometheus: metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
