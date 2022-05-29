@@ -9,7 +9,7 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:postgresql://10.105.150.202:5432/otus
+    url: jdbc:postgresql://10.104.80.172:5432/otus
     username: postgres2
     password: postgres2
     hikari:
