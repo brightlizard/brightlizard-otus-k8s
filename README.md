@@ -31,3 +31,20 @@ minikube stop
 minikube delete
 
 sudo kubectl get validatingwebhookconfigurations
+
+-----------
+sudo rm -rf /tmp/*
+sudo minikube start
+sudo minikube start --vm-driver=none
+sudo minikube addons enable ingress
+
+
+--- Prometheus ---
+sudo helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+sudo helm repo add stable https://charts.helm.sh/stable
+sudo helm repo update
+sudo helm install prom prometheus-community/kube-prometheus-stack -f prometheus.yaml --atomic
+sudo kubectl get all
+sudo helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+sudo helm repo update
+sudo helm install nginx ingress-nginx/ingress-nginx -f nginx-ingress.yaml --atomic
