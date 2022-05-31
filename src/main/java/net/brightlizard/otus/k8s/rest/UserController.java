@@ -8,6 +8,8 @@ import net.brightlizard.otus.k8s.repository.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MimeTypeUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
@@ -27,6 +29,8 @@ public class UserController implements UserApi {
     private final Counter searchedCounter;
     private final Counter deletedCounter;
 
+    private boolean isUserEnabled = true;
+
     public UserController(MeterRegistry meterRegistry) {
         createdCounter = meterRegistry.counter("users.created");
         updatedCounter = meterRegistry.counter("users.updated");
@@ -34,8 +38,27 @@ public class UserController implements UserApi {
         deletedCounter = meterRegistry.counter("users.deleted");
     }
 
+    @GetMapping(
+            value = "/user/on",
+            produces = MimeTypeUtils.APPLICATION_JSON_VALUE
+    )
+    public String healthOn(){
+        isUserEnabled = true;
+        return "{\"status\": \"DONE\"}";
+    }
+
+    @GetMapping(
+            value = "/user/off",
+            produces = MimeTypeUtils.APPLICATION_JSON_VALUE
+    )
+    public String healthOff(){
+        isUserEnabled = false;
+        return "{\"status\": \"DONE\"}";
+    }
+
     @Override
     public ResponseEntity<User> createUser(@Valid User user) {
+        if(!isUserEnabled) return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         user = userService.save(user);
         createdCounter.increment();
         return new ResponseEntity<>(user, HttpStatus.OK);
