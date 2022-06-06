@@ -1,8 +1,8 @@
 # brightlizard-otus-k8s
 https://github.com/schetinnikov-otus/arch-labs
 
-sudo docker build -t brightlizard/brightlizard-otus-k8s-app:1.1.5 .
-sudo docker run -p 8080:8080 brightlizard-otus-k8s-app:1.1.5
+sudo docker build -t brightlizard/brightlizard-otus-k8s-app:1.1.8 .
+sudo docker run -p 8080:8080 brightlizard/brightlizard-otus-k8s-app:1.1.8
 
 sudo kubectl create ns otus
 sudo kubectl config set-context --current --namespace=otus
@@ -48,3 +48,15 @@ sudo kubectl get all
 sudo helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 sudo helm repo update
 sudo helm install nginx ingress-nginx/ingress-nginx -f nginx-ingress.yaml --atomic
+
+
+--- CURL ---
+curl $(sudo minikube service otus-app-helm-nodeport -n otus --url)/health
+curl $(sudo minikube service otus-app-helm-nodeport -n otus --url)/echo
+
+export INGRESS_PORT=$(sudo kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
+export SECURE_INGRESS_PORT=$(sudo kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
+export INGRESS_HOST=$(sudo minikube ip)
+sudo minikube tunnel
+
+export INGRESS_HOST=$(sudo kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.clusterIP}')

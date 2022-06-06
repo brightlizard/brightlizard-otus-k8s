@@ -9,9 +9,9 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:postgresql://10.104.80.172:5432/otus
-    username: postgres2
-    password: postgres2
+    url: jdbc:postgresql://localhost:5432/otus
+    username: postgres
+    password: qwerty99
     hikari:
       connectionTimeout: 20000
       maximumPoolSize: 5

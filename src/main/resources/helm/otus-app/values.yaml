@@ -2,13 +2,14 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+version: v1
 replicaCount: 1
 
 image:
   repository: brightlizard/brightlizard-otus-k8s-app
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.1.7"
+  tag: "1.1.9"
 
 imagePullSecrets: []
 nameOverride: ""

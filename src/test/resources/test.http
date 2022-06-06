@@ -50,3 +50,6 @@ GET http://localhost:8000/actuator/health
 
 ###
 GET http://localhost:8000/metrics
+
+###
+GET http://localhost:8000/echo

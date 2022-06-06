@@ -8,8 +8,9 @@ metadata:
 spec:
   jobLabel: {{ include "otus-app.fullname" . }}
   namespaceSelector:
-    matchNames:
-      - "{{ $.Release.Namespace }}"
+    any: true
+#    matchNames:
+#      - "{{ $.Release.Namespace }}"
   selector:
     matchLabels:
       {{- include "otus-app.selectorLabels" . | nindent 6 }}
