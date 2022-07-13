@@ -8,15 +8,24 @@ spec:
   gateways:
     - otus-ingress-gateway
   http:
-  - route:
-    - destination:
-        host: otus-app-helm
-        subset: v1
-      weight: 50
-    - destination:
-        host: otus-app-helm-v2
-        subset: v2
-      weight: 50
+    - match:
+        - uri:
+            prefix: /proxy
+      route:
+        - destination:
+            host: otus-proxyapp-otus-app
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: otus-app-helm
+            subset: v1
+          weight: 50
+        - destination:
+            host: otus-app-helm-v2
+            subset: v2
+          weight: 50
 
 ---
 apiVersion: networking.istio.io/v1alpha3
