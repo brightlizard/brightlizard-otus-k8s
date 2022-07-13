@@ -53,3 +53,7 @@ GET http://localhost:8000/metrics
 
 ###
 GET http://localhost:8000/echo
+
+###
+GET http://localhost:8000/proxy?url=http://localhost:8000/echo
+X-Test: Foo2

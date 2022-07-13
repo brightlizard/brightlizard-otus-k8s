@@ -1,8 +1,8 @@
 # brightlizard-otus-k8s
 https://github.com/schetinnikov-otus/arch-labs
 
-sudo docker build -t brightlizard/brightlizard-otus-k8s-app:1.1.8 .
-sudo docker run -p 8080:8080 brightlizard/brightlizard-otus-k8s-app:1.1.8
+sudo docker build -t brightlizard/brightlizard-otus-k8s-app:1.3.0 .
+sudo docker run -p 8080:8080 brightlizard/brightlizard-otus-k8s-app:1.3.0
 
 sudo kubectl create ns otus
 sudo kubectl config set-context --current --namespace=otus
@@ -19,6 +19,11 @@ sudo helm install --dry-run --debug otus-app-helm ./otus-app/
 sudo helm delete otus-app-helm
 sudo kubectl delete pvc data-otus-app-helm-postgresql-0
 sudo kubectl exec -ti pod/otus-app-helm-postgresql-0 bash
+
+helm upgrade --debug otus-app-helm ./otus-app/
+helm upgrade --set version=v2 --debug otus-app-helm-v2 ./otus-app/
+
+sudo helm install --debug otus-proxyapp ./otus-app/
 
 
 helm delete --purge my-postgresql
@@ -60,3 +65,11 @@ export INGRESS_HOST=$(sudo minikube ip)
 sudo minikube tunnel
 
 export INGRESS_HOST=$(sudo kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.clusterIP}')
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+
+export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
+export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
+export TCP_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="tcp")].nodePort}')
+export INGRESS_HOST=$(minikube ip)
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+echo $GATEWAY_URL

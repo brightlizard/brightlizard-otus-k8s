@@ -52,7 +52,7 @@ public class EchoController {
         response.set(JsonPayload.BODY, rawBody != null ? Base64.getEncoder().encodeToString(rawBody) : null);
         LOGGER.info("REQUEST: {}", request.getParameterMap());
 
-        return new ResponseEntity(response, HttpStatus.NOT_FOUND);
+        return new ResponseEntity(response, HttpStatus.OK);
 
     }
 
