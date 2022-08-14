@@ -1,0 +1,46 @@
+server:
+  port: 8000
+
+logging:
+  level:
+    root: ERROR
+    org.springframework.web: DEBUG
+    net.brightlizard: DEBUG
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shop
+    username: postgres
+    password: qwerty99
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5
+    initialization-mode: always
+  jpa:
+    hibernate:
+      show-sql: true
+      ddl-auto: create
+  sql:
+    init:
+      mode: always
+      schema-locations: db/init.sql
+
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info,prometheus
+      base-path: /
+      path-mapping:
+        prometheus: metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
