@@ -1,6 +1,6 @@
 package net.brightlizard.shop.infrastructure.rest;
 
-import net.brightlizard.shop.core.application.OrderFacade;
+import net.brightlizard.shop.core.application.order.OrderFacade;
 import net.brightlizard.shop.core.application.order.model.RequestStatus;
 import net.brightlizard.shop.infrastructure.rest.model.Order;
 import org.springframework.http.HttpHeaders;
@@ -34,7 +34,7 @@ public class OrderController {
         @RequestHeader("X-Request-Id") String xRequestId,
         @RequestBody @Valid Order order
     ){
-        RequestStatus requestStatus = orderFacade.handleRequest(order);
+        RequestStatus requestStatus = orderFacade.handleRequest(convert(xRequestId, order));
         if(
             requestStatus.equals(RequestStatus.CREATED) ||
             requestStatus.equals(RequestStatus.ALREADY_EXIST)
@@ -51,9 +51,14 @@ public class OrderController {
         value = "/results",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity getResults(){
-
-
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity getResults() {
+        return new ResponseEntity(orderFacade.getResults(), HttpStatus.OK);
     }
+
+    public net.brightlizard.shop.core.application.order.model.Order convert(String requestId, Order order){
+        return new net.brightlizard.shop.core.application.order.model.Order(
+                requestId, order.getConsumer(), order.getItemsIds()
+        );
+    }
+
 }

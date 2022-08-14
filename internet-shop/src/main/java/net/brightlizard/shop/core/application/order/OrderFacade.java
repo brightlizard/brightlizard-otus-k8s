@@ -1,8 +1,7 @@
-package net.brightlizard.shop.core.application;
+package net.brightlizard.shop.core.application.order;
 
+import net.brightlizard.shop.core.application.order.model.Order;
 import net.brightlizard.shop.core.application.order.model.RequestStatus;
-import net.brightlizard.shop.infrastructure.rest.model.Order;
-
 import java.util.List;
 
 /**
