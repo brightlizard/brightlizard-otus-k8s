@@ -6,6 +6,7 @@ package net.brightlizard.shop.core.application.order.model;
  */
 public enum OrderStatus {
 
+    INITIALIZED,
     CREATED,
     SEND_REQ_TO_STORAGE_SUCCESS,
     SEND_REQ_TO_STORAGE_ERROR,

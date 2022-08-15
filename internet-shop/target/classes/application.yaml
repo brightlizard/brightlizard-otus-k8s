@@ -1,5 +1,5 @@
 server:
-  port: 8000
+  port: 4321
 
 logging:
   level:
@@ -7,23 +7,23 @@ logging:
     org.springframework.web: DEBUG
     net.brightlizard: DEBUG
 
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/shop
-    username: postgres
-    password: qwerty99
-    hikari:
-      connectionTimeout: 20000
-      maximumPoolSize: 5
-    initialization-mode: always
-  jpa:
-    hibernate:
-      show-sql: true
-      ddl-auto: create
-  sql:
-    init:
-      mode: always
-      schema-locations: db/init.sql
+#spring:
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/shop
+#    username: postgres
+#    password: qwerty99
+#    hikari:
+#      connectionTimeout: 20000
+#      maximumPoolSize: 5
+#    initialization-mode: always
+#  jpa:
+#    hibernate:
+#      show-sql: true
+#      ddl-auto: create
+#  sql:
+#    init:
+#      mode: always
+#      schema-locations: db/init.sql
 
 
 

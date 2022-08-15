@@ -1,24 +1,25 @@
 package net.brightlizard.shop.core.application.order.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author Ovcharov Ilya (IAOvcharov@sberbank.ru; ovcharov.ilya@gmail.com)
  * @author SberAPI Team
  */
-public class Order {
+public class Order implements Serializable {
 
     private String id;
     private String consumer;
-    private List<String> itemsIds;
-    private OrderStatus status;
+    private List<ShortItem> shortItems;
+    private OrderStatus status = OrderStatus.INITIALIZED;
     private double totalPrice = 0;
     private String requestId;
 
-    public Order(String requestId, String consumer, List<String> itemsIds) {
+    public Order(String requestId, String consumer, List<ShortItem> shortItems) {
         this.consumer = consumer;
-        this.itemsIds = itemsIds;
         this.requestId = requestId;
+        this.shortItems = shortItems;
     }
 
     public String getId() {
@@ -35,14 +36,6 @@ public class Order {
 
     public void setConsumer(String consumer) {
         this.consumer = consumer;
-    }
-
-    public List<String> getItemsIds() {
-        return itemsIds;
-    }
-
-    public void setItemsIds(List<String> itemsIds) {
-        this.itemsIds = itemsIds;
     }
 
     public OrderStatus getStatus() {
@@ -67,5 +60,13 @@ public class Order {
 
     public void setRequestId(String requestId) {
         this.requestId = requestId;
+    }
+
+    public List<ShortItem> getShortItems() {
+        return shortItems;
+    }
+
+    public void setShortItems(List<ShortItem> shortItems) {
+        this.shortItems = shortItems;
     }
 }

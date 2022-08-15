@@ -1,15 +1,19 @@
 package net.brightlizard.shop.infrastructure.rest;
 
-import net.brightlizard.shop.core.application.order.OrderFacade;
+import net.brightlizard.shop.core.application.order.facade.OrderFacade;
 import net.brightlizard.shop.core.application.order.model.RequestStatus;
+import net.brightlizard.shop.core.application.order.model.ShortItem;
 import net.brightlizard.shop.infrastructure.rest.model.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Ovcharov Ilya (IAOvcharov@sberbank.ru; ovcharov.ilya@gmail.com)
@@ -17,6 +21,7 @@ import java.net.URI;
  */
 
 @RestController
+@RequestMapping("/order")
 public class OrderController {
 
     private OrderFacade orderFacade;
@@ -26,13 +31,12 @@ public class OrderController {
     }
 
     @PostMapping(
-        value = "/order",
         produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity createOrder(
         @RequestHeader("X-Request-Id") String xRequestId,
-        @RequestBody @Valid Order order
+        @Valid @RequestBody Order order
     ){
         RequestStatus requestStatus = orderFacade.handleRequest(convert(xRequestId, order));
         if(
@@ -40,7 +44,7 @@ public class OrderController {
             requestStatus.equals(RequestStatus.ALREADY_EXIST)
         ){
             HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(URI.create("/results"));
+            headers.setLocation(URI.create("/order/results"));
             return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
         }
 
@@ -51,13 +55,29 @@ public class OrderController {
         value = "/results",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity getResults() {
+    public ResponseEntity<List<Order>> getResults() {
         return new ResponseEntity(orderFacade.getResults(), HttpStatus.OK);
     }
 
+    @GetMapping(
+            value = "/requests",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<List<Order>> getRequests() {
+        return new ResponseEntity(orderFacade.getRequests(), HttpStatus.OK);
+    }
+
     public net.brightlizard.shop.core.application.order.model.Order convert(String requestId, Order order){
+        List<net.brightlizard.shop.core.application.order.model.ShortItem> targetItems = new ArrayList<>();
+        order.getItems().forEach(shortItem -> {
+            ShortItem targetItem = new ShortItem();
+            targetItem.setId(shortItem.getId());
+            targetItem.setQuantity(shortItem.getQuantity());
+            targetItems.add(targetItem);
+        });
+
         return new net.brightlizard.shop.core.application.order.model.Order(
-                requestId, order.getConsumer(), order.getItemsIds()
+                requestId, order.getConsumer(), targetItems
         );
     }
 
