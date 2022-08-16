@@ -1,4 +1,4 @@
-package net.brightlizard.shop.core.application.storage;
+package net.brightlizard.shop.core.application.payment;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
@@ -6,9 +6,10 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
+import net.brightlizard.shop.core.application.order.OrderServiceImpl;
 import net.brightlizard.shop.core.application.order.model.Order;
-import net.brightlizard.shop.core.application.order.model.OrderStatus;
-import net.brightlizard.shop.core.application.storage.model.ReservationResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -22,33 +23,33 @@ import org.springframework.util.SerializationUtils;
  */
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class StorageReactor extends AbstractVerticle {
+public class PaymentReactor extends AbstractVerticle {
+
+    private Logger LOGGER = LoggerFactory.getLogger(PaymentReactor.class);
 
     private Vertx vertx;
     private EventBus eventBus;
-    private StorageService storageService;
+    private PaymentService paymentService;
 
-    public StorageReactor(Vertx vertx, StorageService storageService) {
+    public PaymentReactor(Vertx vertx, PaymentService paymentService) {
         this.vertx = vertx;
         this.eventBus = vertx.eventBus();
-        this.storageService = storageService;
+        this.paymentService = paymentService;
     }
 
     @Override
     public void start(Promise<Void> startPromise) throws Exception {
 
-        eventBus.consumer("storage_reserve", storageReserveHandler());
+        eventBus.consumer("payment_do", paymentDoHandler());
 
         startPromise.complete();
     }
 
-    private Handler<Message<Object>> storageReserveHandler() {
+    private Handler<Message<Object>> paymentDoHandler() {
         return message -> {
             Order order = (Order) SerializationUtils.deserialize((byte[]) message.body());
-            order = storageService.reserve(order);
-            message.reply("success");
-
-            eventBus.send("storage_reserve_reply", SerializationUtils.serialize(order));
+            Order processedOrder = paymentService.process(order);
+            eventBus.send("payment_do_reply", SerializationUtils.serialize(processedOrder));
         };
     }
 }

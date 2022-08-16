@@ -6,9 +6,11 @@ import net.brightlizard.shop.core.application.order.model.OrderStatus;
 import net.brightlizard.shop.core.application.order.model.RequestStatus;
 import net.brightlizard.shop.core.application.order.repository.OrderRepository;
 import net.brightlizard.shop.core.application.order.repository.OrderRequestRepository;
+import net.brightlizard.shop.core.application.storage.model.Item;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.SerializationUtils;
-
 import java.util.List;
 
 /**
@@ -17,6 +19,8 @@ import java.util.List;
  */
 @Service
 public class OrderServiceImpl implements OrderService {
+
+    private Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     private Vertx vertx;
     private OrderRequestRepository orderRequestRepository;
@@ -31,8 +35,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public RequestStatus createRequest(Order order) {
         if (orderRequestRepository.containsKey(order.getRequestId())) {
+            LOGGER.info("ALREADY EXIST");
             return RequestStatus.ALREADY_EXIST;
         }
+
+        LOGGER.info("CREATED");
         orderRequestRepository.putRequestHash(order.getRequestId(), Integer.toString(order.hashCode()));
         return RequestStatus.CREATED;
     }
@@ -61,6 +68,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<String> getRequests() {
         return orderRequestRepository.findAll();
+    }
+
+    @Override
+    public Order calculateTotalSum(Order order) {
+        double totalSum = order.getOrderedItems().stream().mapToDouble(Item::getPrice).sum();
+        order.setTotalPrice(totalSum);
+        return order;
     }
 
 }

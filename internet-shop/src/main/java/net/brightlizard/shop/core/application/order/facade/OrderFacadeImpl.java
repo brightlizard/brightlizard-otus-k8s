@@ -2,9 +2,12 @@ package net.brightlizard.shop.core.application.order.facade;
 
 import io.vertx.core.Vertx;
 import net.brightlizard.shop.core.application.order.OrderService;
+import net.brightlizard.shop.core.application.order.OrderServiceImpl;
 import net.brightlizard.shop.core.application.order.model.Order;
 import net.brightlizard.shop.core.application.order.model.OrderStatus;
 import net.brightlizard.shop.core.application.order.model.RequestStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -15,6 +18,7 @@ import java.util.List;
 @Service
 public class OrderFacadeImpl implements OrderFacade {
 
+    private Logger LOGGER = LoggerFactory.getLogger(OrderFacadeImpl.class);
     private OrderService orderService;
 
     public OrderFacadeImpl(OrderService orderService) {
@@ -25,8 +29,12 @@ public class OrderFacadeImpl implements OrderFacade {
     public RequestStatus handleRequest(Order order) {
         try {
             RequestStatus requestStatus = orderService.createRequest(order);
-            if (requestStatus.equals(RequestStatus.ALREADY_EXIST)) return requestStatus;
+            if (requestStatus.equals(RequestStatus.ALREADY_EXIST)) {
+                LOGGER.info("ALREADY EXIST 2");
+                return requestStatus;
+            }
 
+            LOGGER.info("CREATED 2");
             OrderStatus orderStatus = orderService.createOrder(order);
 
             if(orderStatus.equals(OrderStatus.CREATED)){

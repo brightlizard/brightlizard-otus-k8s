@@ -15,5 +15,6 @@ public interface OrderService {
     OrderStatus createOrder(Order order);
     List<Order> getResults();
     List<String> getRequests();
+    Order calculateTotalSum(Order order);
 
 }

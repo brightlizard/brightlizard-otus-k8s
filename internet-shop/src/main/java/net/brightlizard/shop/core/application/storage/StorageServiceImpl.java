@@ -1,9 +1,9 @@
 package net.brightlizard.shop.core.application.storage;
 
 import net.brightlizard.shop.core.application.order.model.Order;
+import net.brightlizard.shop.core.application.order.model.OrderStatus;
 import net.brightlizard.shop.core.application.order.model.ShortItem;
 import net.brightlizard.shop.core.application.storage.model.Item;
-import net.brightlizard.shop.core.application.storage.model.ReservationResult;
 import net.brightlizard.shop.core.application.storage.repolsitory.ItemRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -24,30 +24,39 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public ReservationResult reserve(Order order) {
+    public Order reserve(Order order) {
         try {
             List<ShortItem> shortItems = order.getShortItems();
             List<String> shortItemIds = shortItems.stream().map(ShortItem::getId).collect(Collectors.toList());
             Map<String, Integer> quantityById = shortItems.stream().collect(Collectors.toMap(ShortItem::getId, ShortItem::getQuantity));
 
             if(!itemRepository.containsAllItems(shortItemIds)){
-                return ReservationResult.ERROR;
+                order.setStatus(OrderStatus.STORAGE_RESERVE_ERROR);
+                return order;
             }
 
             List<Item> allItems = itemRepository.findAllItems(shortItemIds);
 
             allItems.forEach(item -> {
-                int reserverdQuantity = quantityById.get(item.getId());
-                int result = item.getQuantity() - reserverdQuantity;
+                int reservedQuantity = quantityById.get(item.getId());
+                int result = item.getQuantity() - reservedQuantity;
                 if(result < 0) throw new RuntimeException("Trying to reserve more items than available.");
                 item.setQuantity(result);
             });
+            itemRepository.updateQuantity(allItems);
 
-            itemRepository.update(allItems);
-            return ReservationResult.SUCCESS;
+            List<Item> updatedItems = itemRepository.findAllItems(shortItemIds);
+            updatedItems.forEach(item -> {
+                item.setQuantity(quantityById.get(item.getId()));
+            });
+            // TODO: reserved
+            order.setOrderedItems(updatedItems);
+            order.setStatus(OrderStatus.STORAGE_RESERVE_SUCCESS);
+            return order;
         } catch (Exception e) {
             e.printStackTrace();
-            return ReservationResult.ERROR;
+            order.setStatus(OrderStatus.STORAGE_RESERVE_ERROR);
+            return order;
         }
     }
 

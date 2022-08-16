@@ -2,10 +2,8 @@ package net.brightlizard.shop.core.application.order.repository;
 
 import net.brightlizard.shop.core.application.order.model.Order;
 import org.springframework.stereotype.Repository;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -31,13 +29,27 @@ public class OrderRepositoryHashMapImpl implements OrderRepository {
 
     @Override
     public Order update(Order order) {
-        ordersById.put(order.getId(), order);
-        return null;
+        return ordersById.put(order.getId(), order);
+    }
+
+    @Override
+    public Order updateStatusAndItems(Order order) {
+        Order order1 = ordersById.get(order.getId());
+        order1.setStatus(order.getStatus());
+        order1.setOrderedItems(order.getOrderedItems());
+        return ordersById.put(order.getId(), order1);
+    }
+
+    @Override
+    public Order updateStatus(Order order) {
+        Order order1 = ordersById.get(order.getId());
+        order1.setStatus(order.getStatus());
+        return ordersById.put(order.getId(), order1);
     }
 
     @Override
     public List<Order> findAll() {
-        return ordersById.values().stream().collect(Collectors.toList());
+        return new ArrayList<>(ordersById.values());
     }
 
 }

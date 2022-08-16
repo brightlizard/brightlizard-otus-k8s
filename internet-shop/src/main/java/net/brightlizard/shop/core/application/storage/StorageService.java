@@ -8,7 +8,6 @@ import net.brightlizard.shop.core.application.storage.model.ReservationResult;
  * @author SberAPI Team
  */
 public interface StorageService {
-
-    ReservationResult reserve(Order order);
+    Order reserve(Order order);
 
 }

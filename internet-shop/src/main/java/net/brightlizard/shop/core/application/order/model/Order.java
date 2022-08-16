@@ -1,6 +1,9 @@
 package net.brightlizard.shop.core.application.order.model;
 
+import net.brightlizard.shop.core.application.storage.model.Item;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,7 +15,9 @@ public class Order implements Serializable {
     private String id;
     private String consumer;
     private List<ShortItem> shortItems;
+    private List<Item> orderedItems = new ArrayList<>();
     private OrderStatus status = OrderStatus.INITIALIZED;
+    private OrderCommStatus commStatus = OrderCommStatus.NO_COMMUNICATION;
     private double totalPrice = 0;
     private String requestId;
 
@@ -20,6 +25,24 @@ public class Order implements Serializable {
         this.consumer = consumer;
         this.requestId = requestId;
         this.shortItems = shortItems;
+    }
+
+    public Order(Order order, List<Item> items) {
+        setId(order.getId());
+        setConsumer(order.getConsumer());
+        setOrderedItems(items);
+        setStatus(order.getStatus());
+        setCommStatus(order.getCommStatus());
+        setTotalPrice(order.getTotalPrice());
+        setRequestId(order.getRequestId());
+    }
+
+    public List<Item> getOrderedItems() {
+        return orderedItems;
+    }
+
+    public void setOrderedItems(List<Item> orderedItems) {
+        this.orderedItems = orderedItems;
     }
 
     public String getId() {
@@ -68,5 +91,13 @@ public class Order implements Serializable {
 
     public void setShortItems(List<ShortItem> shortItems) {
         this.shortItems = shortItems;
+    }
+
+    public OrderCommStatus getCommStatus() {
+        return commStatus;
+    }
+
+    public void setCommStatus(OrderCommStatus commStatus) {
+        this.commStatus = commStatus;
     }
 }

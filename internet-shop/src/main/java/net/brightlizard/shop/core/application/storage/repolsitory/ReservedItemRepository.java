@@ -8,11 +8,11 @@ import java.util.List;
  * @author Ovcharov Ilya (IAOvcharov@sberbank.ru; ovcharov.ilya@gmail.com)
  * @author SberAPI Team
  */
-public interface ItemRepository extends Repository<Item, String> {
+public interface ReservedItemRepository extends Repository<Item, String> {
 
     boolean containsAllItems(List<String> itemIds);
     List<Item> findAllItems(List<String> itemIds);
     List<Item> findAll();
-    List<Item> updateQuantity(List<Item> items);
+    List<Item> update(List<Item> items);
 
 }

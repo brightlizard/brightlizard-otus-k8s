@@ -60,8 +60,8 @@ public class OrderController {
     }
 
     @GetMapping(
-            value = "/requests",
-            produces = MediaType.APPLICATION_JSON_VALUE
+        value = "/requests",
+        produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<Order>> getRequests() {
         return new ResponseEntity(orderFacade.getRequests(), HttpStatus.OK);

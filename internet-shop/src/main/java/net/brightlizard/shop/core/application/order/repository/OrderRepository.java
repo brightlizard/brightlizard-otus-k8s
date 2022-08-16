@@ -15,6 +15,7 @@ public interface OrderRepository extends Repository<Order, String> {
     Optional<Order> findById(String id);
     Order save(Order order);
     Order update(Order order);
+    Order updateStatusAndItems(Order order);
+    Order updateStatus(Order order);
     List<Order> findAll();
-
 }
