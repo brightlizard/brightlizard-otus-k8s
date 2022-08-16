@@ -50,8 +50,6 @@ public class OrderReactor extends AbstractVerticle {
         eventBus.consumer("payment_do_rollback_reply", paymentDoRollbackReplyHandler());
         eventBus.consumer("storage_reserve_rollback_reply", storageReserveRollbackReplyHandler());
 
-
-
         startPromise.complete();
     }
 
