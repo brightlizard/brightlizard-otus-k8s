@@ -1,0 +1,128 @@
+{
+	"info": {
+		"_postman_id": "12dad1b3-b1a2-4324-b76b-4c17ade6b5a5",
+		"name": "Internet Shop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:4321/order",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "X-Request-Id",
+						"value": "1234567890+",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"consumer\": \"00000000-0000-0000-00000000\",\n    \"items\": [\n        {\n            \"id\": \"92e59fbf-d6e1-4636-bc3b-825cc7390be8\",\n            \"quantity\": 3\n        },\n        {\n            \"id\": \"07b676b3-5953-471d-9f20-26c48fe0bab1\",\n            \"quantity\": 3\n        }\n    ],\n    \"deliveryTime\": \"2022-08-17T11:00:00\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:4321/order",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4321",
+					"path": [
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:4321/order/results",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4321/order/results",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4321",
+					"path": [
+						"order",
+						"results"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:4321/order/requests",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4321/order/requests",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4321",
+					"path": [
+						"order",
+						"requests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:4321/storage",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:4321/storage",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4321",
+					"path": [
+						"storage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:4321/customer/account",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:4321/customer/account",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4321",
+					"path": [
+						"customer",
+						"account"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
