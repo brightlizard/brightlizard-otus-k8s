@@ -60,4 +60,21 @@ public class StorageServiceImpl implements StorageService {
         }
     }
 
+    @Override
+    public Order rollback(Order order) {
+        List<ShortItem> shortItems = order.getShortItems();
+        List<String> shortItemIds = shortItems.stream().map(ShortItem::getId).collect(Collectors.toList());
+        Map<String, Integer> quantityById = shortItems.stream().collect(Collectors.toMap(ShortItem::getId, ShortItem::getQuantity));
+
+        List<Item> allItems = itemRepository.findAllItems(shortItemIds);
+        allItems.forEach(item -> {
+            int reservedQuantity = quantityById.get(item.getId());
+            int result = item.getQuantity() + reservedQuantity;
+            item.setQuantity(result);
+        });
+        itemRepository.updateQuantity(allItems);
+        order.setStatus(OrderStatus.STORAGE_RESERVE_ROLLBACK);
+        return order;
+    }
+
 }

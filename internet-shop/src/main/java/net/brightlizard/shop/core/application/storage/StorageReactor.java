@@ -38,17 +38,27 @@ public class StorageReactor extends AbstractVerticle {
     public void start(Promise<Void> startPromise) throws Exception {
 
         eventBus.consumer("storage_reserve", storageReserveHandler());
+        eventBus.consumer("storage_reserve_rollback", storageReserveRollbackHandler());
 
         startPromise.complete();
     }
 
     private Handler<Message<Object>> storageReserveHandler() {
         return message -> {
+            message.reply("success");
             Order order = (Order) SerializationUtils.deserialize((byte[]) message.body());
             order = storageService.reserve(order);
-            message.reply("success");
-
             eventBus.send("storage_reserve_reply", SerializationUtils.serialize(order));
         };
     }
+
+    private Handler<Message<Object>> storageReserveRollbackHandler() {
+        return message -> {
+            message.reply("success");
+            Order order = (Order) SerializationUtils.deserialize((byte[]) message.body());
+            order = storageService.rollback(order);
+            eventBus.send("storage_reserve_rollback_reply", SerializationUtils.serialize(order));
+        };
+    }
+
 }

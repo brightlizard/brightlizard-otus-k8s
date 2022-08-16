@@ -8,4 +8,5 @@ import net.brightlizard.shop.core.application.order.model.Order;
  */
 public interface PaymentService {
     Order process(Order order);
+    Order rollback(Order order);
 }

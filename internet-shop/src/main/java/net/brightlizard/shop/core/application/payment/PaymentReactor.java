@@ -19,7 +19,7 @@ import org.springframework.util.SerializationUtils;
  * @author Ovcharov Ilya (IAOvcharov@sberbank.ru; ovcharov.ilya@gmail.com)
  * @author SberAPI Team
  *
- * Storage Actor
+ * Payment Actor
  */
 @Service
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -41,15 +41,26 @@ public class PaymentReactor extends AbstractVerticle {
     public void start(Promise<Void> startPromise) throws Exception {
 
         eventBus.consumer("payment_do", paymentDoHandler());
+        eventBus.consumer("payment_do_rollback", paymentDoRollbackHandler());
 
         startPromise.complete();
     }
 
     private Handler<Message<Object>> paymentDoHandler() {
         return message -> {
+            message.reply("success");
             Order order = (Order) SerializationUtils.deserialize((byte[]) message.body());
             Order processedOrder = paymentService.process(order);
             eventBus.send("payment_do_reply", SerializationUtils.serialize(processedOrder));
+        };
+    }
+
+    private Handler<Message<Object>> paymentDoRollbackHandler() {
+        return message -> {
+            message.reply("success");
+            Order order = (Order) SerializationUtils.deserialize((byte[]) message.body());
+            Order processedOrder = paymentService.rollback(order);
+            eventBus.send("payment_do_rollback_reply", SerializationUtils.serialize(processedOrder));
         };
     }
 }

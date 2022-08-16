@@ -46,6 +46,10 @@ public class OrderReactor extends AbstractVerticle {
         eventBus.consumer("order_created", orderCreatedHandler());
         eventBus.consumer("storage_reserve_reply", storageReserveReplyHandler());
         eventBus.consumer("payment_do_reply", paymentDoReplyHandler());
+        eventBus.consumer("schedule_delivery_reply", scheduleDeliveryReplyHandler());
+        eventBus.consumer("payment_do_rollback_reply", paymentDoRollbackReplyHandler());
+        eventBus.consumer("storage_reserve_rollback_reply", storageReserveRollbackReplyHandler());
+
 
 
         startPromise.complete();
@@ -73,12 +77,12 @@ public class OrderReactor extends AbstractVerticle {
             Order order = (Order) SerializationUtils.deserialize((byte[]) message.body());
             order = orderRepository.updateStatusAndItems(order);
             if(order.getStatus().equals(OrderStatus.STORAGE_RESERVE_SUCCESS)){
-                preparePaymentRequest(order);
+                doPaymentRequest(order);
             }
         };
     }
 
-    private void preparePaymentRequest(Order order) {
+    private void doPaymentRequest(Order order) {
         Order calculatedOrder = orderService.calculateTotalSum(order);
         eventBus.request("payment_do", SerializationUtils.serialize(order), ar -> {
             if(ar.succeeded()){
@@ -98,10 +102,87 @@ public class OrderReactor extends AbstractVerticle {
             Order order = (Order) SerializationUtils.deserialize((byte[]) message.body());
             order = orderRepository.updateStatus(order);
             if(order.getStatus().equals(OrderStatus.PAYMENT_SUCCESS)){
-                // delivery
+                scheduleDelivery(order);
             }
             if(order.getStatus().equals(OrderStatus.PAYMENT_ERROR)){
-                // rollback items reservation
+                rollbackReservation(order);
+            }
+        };
+    }
+
+    private void scheduleDelivery(Order order) {
+        eventBus.request("schedule_delivery", SerializationUtils.serialize(order), ar -> {
+            if(ar.succeeded()){
+                LOGGER.info("ar.succeeded()");
+                order.setCommStatus(OrderCommStatus.SEND_REQ_TO_DELIVERY_SUCCESS);
+            }
+            if(ar.failed()){
+                LOGGER.info("ar.failed()");
+                order.setCommStatus(OrderCommStatus.SEND_REQ_TO_DELIVERY_ERROR);
+            }
+            orderRepository.updateStatus(order);
+        });
+    }
+
+    private Handler<Message<Object>> scheduleDeliveryReplyHandler() {
+        return message -> {
+            Order order = (Order) SerializationUtils.deserialize((byte[]) message.body());
+            order = orderRepository.updateStatus(order);
+            if(order.getStatus().equals(OrderStatus.DELIVERY_SUCCESS)){
+                // TODO: complete saga
+                LOGGER.info("COMPLETE SAGA FOR -> {}", order);
+            }
+            if(order.getStatus().equals(OrderStatus.DELIVERY_ERROR)){
+                rollbackPayment(order);
+                rollbackReservation(order);
+            }
+        };
+    }
+
+    private void rollbackPayment(Order order) {
+        eventBus.request("payment_do_rollback", SerializationUtils.serialize(order), ar -> {
+            if(ar.succeeded()){
+                LOGGER.info("ar.succeeded()");
+                order.setCommStatus(OrderCommStatus.SEND_REQ_TO_PAYMENT_ROLLBACK_SUCCESS);
+            }
+            if(ar.failed()){
+                LOGGER.info("ar.failed()");
+                order.setCommStatus(OrderCommStatus.SEND_REQ_TO_PAYMENT_ROLLBACK_ERROR);
+            }
+            orderRepository.updateStatus(order);
+        });
+    }
+
+    private void rollbackReservation(Order order) {
+        eventBus.request("storage_reserve_rollback", SerializationUtils.serialize(order), ar -> {
+            if(ar.succeeded()){
+                LOGGER.info("ar.succeeded()");
+                order.setCommStatus(OrderCommStatus.SEND_REQ_TO_STORAGE_ROLLBACK_SUCCESS);
+            }
+            if(ar.failed()){
+                LOGGER.info("ar.failed()");
+                order.setCommStatus(OrderCommStatus.SEND_REQ_TO_STORAGE_ROLLBACK_ERROR);
+            }
+            orderRepository.updateStatus(order);
+        });
+    }
+
+    private Handler<Message<Object>> paymentDoRollbackReplyHandler() {
+        return message -> {
+            Order order = (Order) SerializationUtils.deserialize((byte[]) message.body());
+            order = orderRepository.updateStatus(order);
+            if(order.getStatus().equals(OrderStatus.PAYMENT_ROLLBACK)){
+                LOGGER.info("PAYMENT ROLLBACK FOR -> {}", order);
+            }
+        };
+    }
+
+    private Handler<Message<Object>> storageReserveRollbackReplyHandler() {
+        return message -> {
+            Order order = (Order) SerializationUtils.deserialize((byte[]) message.body());
+            order = orderRepository.updateStatus(order);
+            if (order.getStatus().equals(OrderStatus.STORAGE_RESERVE_ROLLBACK)) {
+                LOGGER.info("ITEMS RESERVATION ROLLBACK FOR -> {}", order);
             }
         };
     }

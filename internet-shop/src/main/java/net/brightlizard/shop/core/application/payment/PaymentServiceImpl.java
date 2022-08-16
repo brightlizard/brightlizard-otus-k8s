@@ -30,7 +30,20 @@ public class PaymentServiceImpl implements PaymentService {
             return order;
         }
         customerAccount.setBalance(restBalance);
+        customerAccountRepository.update(customerAccount);
         order.setStatus(OrderStatus.PAYMENT_SUCCESS);
         return order;
     }
+
+    @Override
+    public Order rollback(Order order) {
+        CustomerAccount customerAccount = customerAccountRepository.findById(order.getConsumer());
+        double balance = customerAccount.getBalance();
+        double newBalance = balance + order.getTotalPrice();
+        customerAccount.setBalance(newBalance);
+        customerAccountRepository.update(customerAccount);
+        order.setStatus(OrderStatus.PAYMENT_ROLLBACK);
+        return order;
+    }
+
 }

@@ -77,7 +77,7 @@ public class OrderController {
         });
 
         return new net.brightlizard.shop.core.application.order.model.Order(
-                requestId, order.getConsumer(), targetItems
+                requestId, order.getConsumer(), targetItems, order.getDeliveryTime()
         );
     }
 
