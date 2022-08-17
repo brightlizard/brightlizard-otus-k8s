@@ -43,7 +43,7 @@ public class OrderReactor extends AbstractVerticle {
     @Override
     public void start(Promise<Void> startPromise) throws Exception {
 
-        eventBus.consumer("order_created", orderCreatedHandler());
+        eventBus.consumer("order_created", orderCreatedHandler()); // Begin Saga
         eventBus.consumer("storage_reserve_reply", storageReserveReplyHandler());
         eventBus.consumer("payment_do_reply", paymentDoReplyHandler());
         eventBus.consumer("schedule_delivery_reply", scheduleDeliveryReplyHandler());

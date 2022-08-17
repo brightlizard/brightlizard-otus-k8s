@@ -1,12 +1,12 @@
 {
 	"info": {
-		"_postman_id": "12dad1b3-b1a2-4324-b76b-4c17ade6b5a5",
+		"_postman_id": "e711e6c0-50cc-4c13-8c9a-60c231f7f1ab",
 		"name": "Internet Shop",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "http://localhost:4321/order",
+			"name": "http://arch.homework/order",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -17,21 +17,21 @@
 					},
 					{
 						"key": "X-Request-Id",
-						"value": "1234567890+",
+						"value": "1234567890++",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"consumer\": \"00000000-0000-0000-00000000\",\n    \"items\": [\n        {\n            \"id\": \"92e59fbf-d6e1-4636-bc3b-825cc7390be8\",\n            \"quantity\": 3\n        },\n        {\n            \"id\": \"07b676b3-5953-471d-9f20-26c48fe0bab1\",\n            \"quantity\": 3\n        }\n    ],\n    \"deliveryTime\": \"2022-08-17T11:00:00\"\n}"
+					"raw": "{\n    \"consumer\": \"00000000-0000-0000-00000000\",\n    \"items\": [\n        {\n            \"id\": \"92e59fbf-d6e1-4636-bc3b-825cc7390be8\",\n            \"quantity\": 3\n        },\n        {\n            \"id\": \"07b676b3-5953-471d-9f20-26c48fe0bab1\",\n            \"quantity\": 3\n        }\n    ],\n    \"deliveryTime\": \"2022-08-17T15:00:00\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:4321/order",
+					"raw": "http://arch.homework/order",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"arch",
+						"homework"
 					],
-					"port": "4321",
 					"path": [
 						"order"
 					]
@@ -40,17 +40,17 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:4321/order/results",
+			"name": "http://arch.homework/order/results",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:4321/order/results",
+					"raw": "http://arch.homework/order/results",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"arch",
+						"homework"
 					],
-					"port": "4321",
 					"path": [
 						"order",
 						"results"
@@ -60,17 +60,17 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:4321/order/requests",
+			"name": "http://arch.homework/order/requests",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:4321/order/requests",
+					"raw": "http://arch.homework/order/requests",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"arch",
+						"homework"
 					],
-					"port": "4321",
 					"path": [
 						"order",
 						"requests"
@@ -80,7 +80,7 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:4321/storage",
+			"name": "http://arch.homework/storage",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -91,12 +91,12 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:4321/storage",
+					"raw": "http://arch.homework/storage",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"arch",
+						"homework"
 					],
-					"port": "4321",
 					"path": [
 						"storage"
 					]
@@ -105,20 +105,40 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:4321/customer/account",
+			"name": "http://arch.homework/customer/account",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:4321/customer/account",
+					"raw": "http://arch.homework/customer/account",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"arch",
+						"homework"
 					],
-					"port": "4321",
 					"path": [
 						"customer",
 						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://arch.homework/actuator/info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://arch.homework/actuator/info",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"actuator",
+						"info"
 					]
 				}
 			},
