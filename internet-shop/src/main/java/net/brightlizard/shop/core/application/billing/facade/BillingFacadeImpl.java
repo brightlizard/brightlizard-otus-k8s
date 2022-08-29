@@ -20,6 +20,11 @@ public class BillingFacadeImpl implements BillingFacade {
     }
 
     @Override
+    public List<Customer> getCustomers() {
+        return null;
+    }
+
+    @Override
     public List<CustomerAccount> getCustomerAccounts() {
         return customerAccountRepository.findAll();
     }

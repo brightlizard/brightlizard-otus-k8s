@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.List;
 
@@ -28,22 +27,29 @@ public class CustomerController {
         this.billingFacade = paymentFacade;
     }
 
-    @GetMapping(
-        value = "/account",
-        produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<List<CustomerAccount>> getAccount(){
-        return new ResponseEntity(billingFacade.getCustomerAccounts(), HttpStatus.OK);
-    }
-
     @PostMapping(
-        value = "/customer",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<CreatedCustomer> createCustomer(@Valid @RequestBody NewCustomer newCustomer){
         Customer customer = billingFacade.createCustomer(convert(newCustomer));
         return new ResponseEntity(convert(customer),HttpStatus.OK);
     }
+
+    @GetMapping(
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<List<Customer>> getCustomers(){
+        return new ResponseEntity(billingFacade.getCustomerAccounts(), HttpStatus.OK);
+    }
+
+    @GetMapping(
+        value = "/account",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<List<CustomerAccount>> getAccounts(){
+        return new ResponseEntity(billingFacade.getCustomerAccounts(), HttpStatus.OK);
+    }
+
 
     private Customer convert(NewCustomer newCustomer) {
         Customer customer = new Customer(newCustomer.getName());

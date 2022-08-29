@@ -10,7 +10,7 @@ import java.util.List;
  * @author SberAPI Team
  */
 public interface BillingFacade {
-
+    List<Customer> getCustomers();
     List<CustomerAccount> getCustomerAccounts();
     Customer createCustomer(Customer customer);
 

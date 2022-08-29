@@ -6,12 +6,10 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
-import net.brightlizard.shop.core.application.billing.model.CustomerAccount;
-import net.brightlizard.shop.core.application.billing.model.WithdrawResponse;
+import net.brightlizard.shop.core.application.billing.model.DepositStatus;
 import net.brightlizard.shop.core.application.billing.model.WithdrawStatus;
-import net.brightlizard.shop.core.application.billing.repository.CustomerAccountRepository;
-import net.brightlizard.shop.core.application.order.model.OrderStatus;
-import net.brightlizard.shop.core.application.payment.model.WithdrawRequest;
+import net.brightlizard.shop.core.application.billing.model.DepositRequest;
+import net.brightlizard.shop.core.application.billing.model.WithdrawRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -34,7 +32,6 @@ public class BillingReactor extends AbstractVerticle {
     private Vertx vertx;
     private EventBus eventBus;
     private BillingService billingService;
-    private CustomerAccountRepository customerAccountRepository;
 
     public BillingReactor(Vertx vertx, BillingService billingService) {
         this.vertx = vertx;
@@ -44,25 +41,24 @@ public class BillingReactor extends AbstractVerticle {
 
     @Override
     public void start(Promise<Void> startPromise) throws Exception {
-
-        eventBus.consumer("withdraw", withdraw());
-
+        eventBus.consumer("billing.withdraw", withdraw());
+        eventBus.consumer("billing.deposit", deposit());
         startPromise.complete();
     }
 
     private Handler<Message<Object>> withdraw() {
         return message -> {
             WithdrawRequest withdrawRequest = (WithdrawRequest) SerializationUtils.deserialize((byte[]) message.body());
-            CustomerAccount customerAccount = customerAccountRepository.findById(withdrawRequest.getCustomerId());
-            double balance = customerAccount.getBalance();
-            double restBalance = balance - withdrawRequest.getTotalSum();
-            if(restBalance < 0) {
-                message.reply(SerializationUtils.serialize(new WithdrawResponse(WithdrawStatus.FAIL)));
-            }
-            customerAccount.setBalance(restBalance);
-            customerAccountRepository.update(customerAccount);
+            WithdrawStatus withdrawStatus = billingService.withdraw(withdrawRequest);
+            message.reply(SerializationUtils.serialize(withdrawStatus));
+        };
+    }
 
-            message.reply(SerializationUtils.serialize(new WithdrawResponse(WithdrawStatus.SUCCESS)));
+    private Handler<Message<Object>> deposit() {
+        return message -> {
+            DepositRequest depositRequest = (DepositRequest) SerializationUtils.deserialize((byte[]) message.body());
+            DepositStatus depositStatus = billingService.deposit(depositRequest);
+            message.reply(SerializationUtils.serialize(depositStatus));
         };
     }
 }

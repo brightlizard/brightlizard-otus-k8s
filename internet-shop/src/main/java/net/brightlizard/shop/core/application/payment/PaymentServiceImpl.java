@@ -6,9 +6,9 @@ import net.brightlizard.shop.core.application.billing.model.WithdrawResponse;
 import net.brightlizard.shop.core.application.billing.model.WithdrawStatus;
 import net.brightlizard.shop.core.application.order.model.Order;
 import net.brightlizard.shop.core.application.order.model.OrderStatus;
-import net.brightlizard.shop.core.application.billing.model.CustomerAccount;
 import net.brightlizard.shop.core.application.billing.repository.CustomerAccountRepository;
-import net.brightlizard.shop.core.application.payment.model.WithdrawRequest;
+import net.brightlizard.shop.core.application.billing.model.DepositRequest;
+import net.brightlizard.shop.core.application.billing.model.WithdrawRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.SerializationUtils;
 
@@ -30,9 +30,10 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Order process(Order order) {
-        WithdrawRequest withdrawRequest = new WithdrawRequest(order.getConsumer(), order.getTotalPrice());
-        eventBus.request("withdraw", withdrawRequest, ar -> {
+    public void process(Order order) {
+        WithdrawRequest withdrawRequest = new WithdrawRequest(order.getCustomer(), order.getTotalPrice());
+        // Какая-то дополнительная логика применимая к платежу
+        eventBus.request("billing.withdraw", withdrawRequest, ar -> {
             WithdrawResponse withdrawResponse = (WithdrawResponse) SerializationUtils.deserialize((byte[]) ar.result().body());
             if(ar.succeeded()){
                 if(withdrawResponse.getStatus().equals(WithdrawStatus.SUCCESS)){
@@ -47,18 +48,27 @@ public class PaymentServiceImpl implements PaymentService {
             }
             eventBus.send("payment_do_reply", SerializationUtils.serialize(order));
         });
-        return order;
     }
 
     @Override
-    public Order rollback(Order order) {
-        CustomerAccount customerAccount = customerAccountRepository.findById(order.getConsumer());
-        double balance = customerAccount.getBalance();
-        double newBalance = balance + order.getTotalPrice();
-        customerAccount.setBalance(newBalance);
-        customerAccountRepository.update(customerAccount);
-        order.setStatus(OrderStatus.PAYMENT_ROLLBACK);
-        return order;
+    public void rollback(Order order) {
+        DepositRequest rollbackRequest = new DepositRequest(order.getCustomer(), order.getTotalPrice());
+        // Какая-то дополнительная логика применимая к откату платежа
+        eventBus.request("billing.deposit", rollbackRequest, ar -> {
+            WithdrawResponse withdrawResponse = (WithdrawResponse) SerializationUtils.deserialize((byte[]) ar.result().body());
+            if(ar.succeeded()){
+                if(withdrawResponse.getStatus().equals(WithdrawStatus.SUCCESS)){
+                    order.setStatus(OrderStatus.PAYMENT_ROLLBACK);
+                }
+                if(withdrawResponse.getStatus().equals(WithdrawStatus.FAIL)){
+                    order.setStatus(OrderStatus.PAYMENT_ERROR);
+                }
+            }
+            if(ar.failed()){
+                order.setStatus(OrderStatus.PAYMENT_ERROR);
+            }
+            eventBus.send("payment_do_rollback_reply", SerializationUtils.serialize(order));
+        });
     }
 
 }

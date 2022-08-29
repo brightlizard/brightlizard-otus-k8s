@@ -1,4 +1,4 @@
-package net.brightlizard.shop.core.application.payment.model;
+package net.brightlizard.shop.core.application.billing.model;
 
 import java.util.Objects;
 

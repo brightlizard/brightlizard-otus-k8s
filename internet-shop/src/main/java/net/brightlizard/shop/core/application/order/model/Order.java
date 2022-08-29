@@ -14,7 +14,7 @@ import java.util.Objects;
 public class Order implements Serializable {
 
     private String id;
-    private String consumer;
+    private String customer;
     private List<ShortItem> shortItems;
     private List<Item> orderedItems = new ArrayList<>();
     private OrderStatus status = OrderStatus.INITIALIZED;
@@ -23,8 +23,8 @@ public class Order implements Serializable {
     private String requestId;
     private LocalDateTime deliveryTime;
 
-    public Order(String requestId, String consumer, List<ShortItem> shortItems, LocalDateTime deliveryTime) {
-        this.consumer = consumer;
+    public Order(String requestId, String customer, List<ShortItem> shortItems, LocalDateTime deliveryTime) {
+        this.customer = customer;
         this.requestId = requestId;
         this.shortItems = shortItems;
         this.deliveryTime = deliveryTime;
@@ -32,7 +32,7 @@ public class Order implements Serializable {
 
     public Order(Order order, List<Item> items) {
         setId(order.getId());
-        setConsumer(order.getConsumer());
+        setCustomer(order.getCustomer());
         setOrderedItems(items);
         setStatus(order.getStatus());
         setCommStatus(order.getCommStatus());
@@ -57,12 +57,12 @@ public class Order implements Serializable {
         this.id = id;
     }
 
-    public String getConsumer() {
-        return consumer;
+    public String getCustomer() {
+        return customer;
     }
 
-    public void setConsumer(String consumer) {
-        this.consumer = consumer;
+    public void setCustomer(String customer) {
+        this.customer = customer;
     }
 
     public OrderStatus getStatus() {
@@ -118,19 +118,19 @@ public class Order implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Order)) return false;
         Order order = (Order) o;
-        return Double.compare(order.totalPrice, totalPrice) == 0 && Objects.equals(id, order.id) && Objects.equals(consumer, order.consumer) && Objects.equals(shortItems, order.shortItems) && Objects.equals(orderedItems, order.orderedItems) && status == order.status && commStatus == order.commStatus && Objects.equals(requestId, order.requestId) && Objects.equals(deliveryTime, order.deliveryTime);
+        return Double.compare(order.totalPrice, totalPrice) == 0 && Objects.equals(id, order.id) && Objects.equals(customer, order.customer) && Objects.equals(shortItems, order.shortItems) && Objects.equals(orderedItems, order.orderedItems) && status == order.status && commStatus == order.commStatus && Objects.equals(requestId, order.requestId) && Objects.equals(deliveryTime, order.deliveryTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, consumer, shortItems, orderedItems, status, commStatus, totalPrice, requestId, deliveryTime);
+        return Objects.hash(id, customer, shortItems, orderedItems, status, commStatus, totalPrice, requestId, deliveryTime);
     }
 
     @Override
     public String toString() {
         return "Order{" +
                 "id='" + id + '\'' +
-                ", consumer='" + consumer + '\'' +
+                ", consumer='" + customer + '\'' +
                 ", shortItems=" + shortItems +
                 ", orderedItems=" + orderedItems +
                 ", status=" + status +

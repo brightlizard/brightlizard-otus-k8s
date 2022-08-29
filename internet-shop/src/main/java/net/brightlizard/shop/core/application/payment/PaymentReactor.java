@@ -49,8 +49,7 @@ public class PaymentReactor extends AbstractVerticle {
         return message -> {
             message.reply("success");
             Order order = (Order) SerializationUtils.deserialize((byte[]) message.body());
-            Order processedOrder = paymentService.process(order);
-//            eventBus.send("payment_do_reply", SerializationUtils.serialize(processedOrder));
+            paymentService.process(order);
         };
     }
 
@@ -58,8 +57,7 @@ public class PaymentReactor extends AbstractVerticle {
         return message -> {
             message.reply("success");
             Order order = (Order) SerializationUtils.deserialize((byte[]) message.body());
-            Order processedOrder = paymentService.rollback(order);
-            eventBus.send("payment_do_rollback_reply", SerializationUtils.serialize(processedOrder));
+            paymentService.rollback(order);
         };
     }
 }

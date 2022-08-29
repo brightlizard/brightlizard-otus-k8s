@@ -7,6 +7,6 @@ import net.brightlizard.shop.core.application.order.model.Order;
  * @author SberAPI Team
  */
 public interface PaymentService {
-    Order process(Order order);
-    Order rollback(Order order);
+    void process(Order order);
+    void rollback(Order order);
 }
