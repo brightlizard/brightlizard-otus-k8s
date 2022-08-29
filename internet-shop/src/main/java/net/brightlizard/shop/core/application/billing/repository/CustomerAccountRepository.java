@@ -1,6 +1,6 @@
-package net.brightlizard.shop.core.application.payment.repository;
+package net.brightlizard.shop.core.application.billing.repository;
 
-import net.brightlizard.shop.core.application.payment.model.CustomerAccount;
+import net.brightlizard.shop.core.application.billing.model.CustomerAccount;
 import org.springframework.data.repository.Repository;
 import java.util.List;
 

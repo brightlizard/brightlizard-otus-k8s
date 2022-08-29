@@ -1,13 +1,16 @@
 package net.brightlizard.shop.infrastructure.rest;
 
-import net.brightlizard.shop.core.application.payment.facade.PaymentFacade;
-import net.brightlizard.shop.core.application.payment.model.CustomerAccount;
+import net.brightlizard.shop.core.application.billing.facade.BillingFacade;
+import net.brightlizard.shop.core.application.billing.model.Customer;
+import net.brightlizard.shop.core.application.billing.model.CustomerAccount;
+import net.brightlizard.shop.infrastructure.rest.model.CreatedCustomer;
+import net.brightlizard.shop.infrastructure.rest.model.NewCustomer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -19,10 +22,10 @@ import java.util.List;
 @RequestMapping("/customer")
 public class CustomerController {
 
-    private PaymentFacade paymentFacade;
+    private BillingFacade billingFacade;
 
-    public CustomerController(PaymentFacade paymentFacade) {
-        this.paymentFacade = paymentFacade;
+    public CustomerController(BillingFacade paymentFacade) {
+        this.billingFacade = paymentFacade;
     }
 
     @GetMapping(
@@ -30,7 +33,30 @@ public class CustomerController {
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<CustomerAccount>> getAccount(){
-        return new ResponseEntity(paymentFacade.getCustomerAccounts(), HttpStatus.OK);
+        return new ResponseEntity(billingFacade.getCustomerAccounts(), HttpStatus.OK);
+    }
+
+    @PostMapping(
+        value = "/customer",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<CreatedCustomer> createCustomer(@Valid @RequestBody NewCustomer newCustomer){
+        Customer customer = billingFacade.createCustomer(convert(newCustomer));
+        return new ResponseEntity(convert(customer),HttpStatus.OK);
+    }
+
+    private Customer convert(NewCustomer newCustomer) {
+        Customer customer = new Customer(newCustomer.getName());
+        return customer;
+    }
+
+    private CreatedCustomer convert(Customer customer) {
+        CreatedCustomer createdCustomer = new CreatedCustomer();
+        createdCustomer.setId(customer.getId());
+        createdCustomer.setName(customer.getName());
+        createdCustomer.setStatus(customer.getStatus());
+        createdCustomer.setAccount(customer.getAccount());
+        return createdCustomer;
     }
 
 }

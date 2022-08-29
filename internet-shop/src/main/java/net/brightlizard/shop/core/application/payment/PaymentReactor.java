@@ -6,7 +6,6 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
-import net.brightlizard.shop.core.application.order.OrderServiceImpl;
 import net.brightlizard.shop.core.application.order.model.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,7 @@ public class PaymentReactor extends AbstractVerticle {
             message.reply("success");
             Order order = (Order) SerializationUtils.deserialize((byte[]) message.body());
             Order processedOrder = paymentService.process(order);
-            eventBus.send("payment_do_reply", SerializationUtils.serialize(processedOrder));
+//            eventBus.send("payment_do_reply", SerializationUtils.serialize(processedOrder));
         };
     }
 

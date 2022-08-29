@@ -1,9 +1,8 @@
-package net.brightlizard.shop.core.application.payment.repository;
+package net.brightlizard.shop.core.application.billing.repository;
 
-import net.brightlizard.shop.core.application.payment.model.CustomerAccount;
-import net.brightlizard.shop.core.application.payment.model.CustomerAccountStatus;
+import net.brightlizard.shop.core.application.billing.model.CustomerAccount;
+import net.brightlizard.shop.core.application.billing.model.CustomerAccountStatus;
 import org.springframework.stereotype.Repository;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

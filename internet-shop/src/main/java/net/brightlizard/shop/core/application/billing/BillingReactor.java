@@ -1,0 +1,68 @@
+package net.brightlizard.shop.core.application.billing;
+
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Handler;
+import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.eventbus.Message;
+import net.brightlizard.shop.core.application.billing.model.CustomerAccount;
+import net.brightlizard.shop.core.application.billing.model.WithdrawResponse;
+import net.brightlizard.shop.core.application.billing.model.WithdrawStatus;
+import net.brightlizard.shop.core.application.billing.repository.CustomerAccountRepository;
+import net.brightlizard.shop.core.application.order.model.OrderStatus;
+import net.brightlizard.shop.core.application.payment.model.WithdrawRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import org.springframework.util.SerializationUtils;
+
+/**
+ * @author Ovcharov Ilya (IAOvcharov@sberbank.ru; ovcharov.ilya@gmail.com)
+ * @author SberAPI Team
+ *
+ * Payment Actor
+ */
+@Service
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class BillingReactor extends AbstractVerticle {
+
+    private Logger LOGGER = LoggerFactory.getLogger(BillingReactor.class);
+
+    private Vertx vertx;
+    private EventBus eventBus;
+    private BillingService billingService;
+    private CustomerAccountRepository customerAccountRepository;
+
+    public BillingReactor(Vertx vertx, BillingService billingService) {
+        this.vertx = vertx;
+        this.eventBus = vertx.eventBus();
+        this.billingService = billingService;
+    }
+
+    @Override
+    public void start(Promise<Void> startPromise) throws Exception {
+
+        eventBus.consumer("withdraw", withdraw());
+
+        startPromise.complete();
+    }
+
+    private Handler<Message<Object>> withdraw() {
+        return message -> {
+            WithdrawRequest withdrawRequest = (WithdrawRequest) SerializationUtils.deserialize((byte[]) message.body());
+            CustomerAccount customerAccount = customerAccountRepository.findById(withdrawRequest.getCustomerId());
+            double balance = customerAccount.getBalance();
+            double restBalance = balance - withdrawRequest.getTotalSum();
+            if(restBalance < 0) {
+                message.reply(SerializationUtils.serialize(new WithdrawResponse(WithdrawStatus.FAIL)));
+            }
+            customerAccount.setBalance(restBalance);
+            customerAccountRepository.update(customerAccount);
+
+            message.reply(SerializationUtils.serialize(new WithdrawResponse(WithdrawStatus.SUCCESS)));
+        };
+    }
+}
