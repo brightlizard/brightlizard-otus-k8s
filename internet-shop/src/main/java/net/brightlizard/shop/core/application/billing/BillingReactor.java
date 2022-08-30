@@ -6,10 +6,7 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
-import net.brightlizard.shop.core.application.billing.model.DepositStatus;
-import net.brightlizard.shop.core.application.billing.model.WithdrawStatus;
-import net.brightlizard.shop.core.application.billing.model.DepositRequest;
-import net.brightlizard.shop.core.application.billing.model.WithdrawRequest;
+import net.brightlizard.shop.core.application.billing.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -48,9 +45,14 @@ public class BillingReactor extends AbstractVerticle {
 
     private Handler<Message<Object>> withdraw() {
         return message -> {
-            WithdrawRequest withdrawRequest = (WithdrawRequest) SerializationUtils.deserialize((byte[]) message.body());
-            WithdrawStatus withdrawStatus = billingService.withdraw(withdrawRequest);
-            message.reply(SerializationUtils.serialize(withdrawStatus));
+            LOGGER.info("WITHDRAW ENTER");
+            try {
+                WithdrawRequest withdrawRequest = (WithdrawRequest) SerializationUtils.deserialize((byte[]) message.body());
+                WithdrawStatus withdrawStatus = billingService.withdraw(withdrawRequest);
+                message.reply(SerializationUtils.serialize(new WithdrawResponse(withdrawStatus)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         };
     }
 

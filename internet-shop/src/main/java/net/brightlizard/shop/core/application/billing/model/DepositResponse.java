@@ -7,11 +7,11 @@ import java.util.Objects;
  * @author Ovcharov Ilya (ovcharov.ilya@gmail.com)
  * net.brightlizard (c)
  */
-public class RollbackResponse implements Serializable {
+public class DepositResponse implements Serializable {
 
     private DepositStatus status;
 
-    public RollbackResponse(DepositStatus status) {
+    public DepositResponse(DepositStatus status) {
         this.status = status;
     }
 
@@ -27,7 +27,7 @@ public class RollbackResponse implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        RollbackResponse that = (RollbackResponse) o;
+        DepositResponse that = (DepositResponse) o;
         return status == that.status;
     }
 

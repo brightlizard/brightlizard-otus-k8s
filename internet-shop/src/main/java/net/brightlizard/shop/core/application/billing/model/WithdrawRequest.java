@@ -1,12 +1,13 @@
 package net.brightlizard.shop.core.application.billing.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * @author Ovcharov Ilya (ovcharov.ilya@gmail.com)
  * net.brightlizard (c)
  */
-public class WithdrawRequest {
+public class WithdrawRequest implements Serializable {
 
     private String customerId;
     private double totalSum;
@@ -44,5 +45,13 @@ public class WithdrawRequest {
     @Override
     public int hashCode() {
         return Objects.hash(customerId, totalSum);
+    }
+
+    @Override
+    public String toString() {
+        return "WithdrawRequest{" +
+                "customerId='" + customerId + '\'' +
+                ", totalSum=" + totalSum +
+                '}';
     }
 }

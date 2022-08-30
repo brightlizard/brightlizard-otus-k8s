@@ -1,12 +1,13 @@
 package net.brightlizard.shop.core.application.billing.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * @author Ovcharov Ilya (ovcharov.ilya@gmail.com)
  * net.brightlizard (c)
  */
-public class DepositRequest {
+public class DepositRequest implements Serializable {
 
     private String customerId;
     private double totalSum;
