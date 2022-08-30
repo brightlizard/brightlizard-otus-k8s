@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @Repository
 public class OrderRepositoryImpl implements OrderRepository {
 
-    private HashMap<String, Order> ordersById = new HashMap();
     private JdbcTemplate jdbcTemplate;
 
     public OrderRepositoryImpl(JdbcTemplate jdbcTemplate) {
