@@ -1,5 +1,6 @@
 package net.brightlizard.shop.core.application.billing.model;
 
+import javax.persistence.Entity;
 import java.util.Objects;
 
 /**

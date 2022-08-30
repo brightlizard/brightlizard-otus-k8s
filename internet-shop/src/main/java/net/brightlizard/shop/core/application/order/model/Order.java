@@ -23,6 +23,16 @@ public class Order implements Serializable {
     private String requestId;
     private LocalDateTime deliveryTime;
 
+    public Order(String id, String customer, OrderStatus status, OrderCommStatus commStatus, double totalPrice, String requestId, LocalDateTime deliveryTime) {
+        this.id = id;
+        this.customer = customer;
+        this.status = status;
+        this.commStatus = commStatus;
+        this.totalPrice = totalPrice;
+        this.requestId = requestId;
+        this.deliveryTime = deliveryTime;
+    }
+
     public Order(String requestId, String customer, List<ShortItem> shortItems, LocalDateTime deliveryTime) {
         this.customer = customer;
         this.requestId = requestId;

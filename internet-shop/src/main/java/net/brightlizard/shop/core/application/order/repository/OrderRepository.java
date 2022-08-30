@@ -10,7 +10,7 @@ import java.util.Optional;
  * @author Ovcharov Ilya (IAOvcharov@sberbank.ru; ovcharov.ilya@gmail.com)
  * @author SberAPI Team
  */
-public interface OrderRepository extends Repository<Order, String> {
+public interface OrderRepository /*extends Repository<Order, String>*/ {
 
     Optional<Order> findById(String id);
     Order save(Order order);

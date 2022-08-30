@@ -83,3 +83,22 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+
+springDatasourceUrl: jdbc:postgresql://internet-shop-postgres.otus.svc.cluster.local:5432/internet-shop
+
+postgresql:
+  auth:
+    username: postgres2
+    password: postgres2
+    database: otus
+  enabled: true
+  postgresqlUsername: postgres2
+  postgresqlPassword: postgres2
+  postgresqlDatabase: otus
+  service:
+    port: "5432"
+
+#metrics:
+#  serviceMonitor:
+#    enabled: true

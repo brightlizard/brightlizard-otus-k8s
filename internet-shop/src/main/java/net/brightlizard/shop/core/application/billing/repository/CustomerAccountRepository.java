@@ -8,7 +8,7 @@ import java.util.List;
  * @author Ovcharov Ilya (IAOvcharov@sberbank.ru; ovcharov.ilya@gmail.com)
  * @author SberAPI Team
  */
-public interface CustomerAccountRepository extends Repository<CustomerAccount, String> {
+public interface CustomerAccountRepository /*extends Repository<CustomerAccount, String>*/ {
 
     CustomerAccount findById(String id);
     List<CustomerAccount> findAll();

@@ -9,14 +9,14 @@ CREATE TABLE IF NOT EXISTS public.order_request (
 DROP TABLE IF EXISTS public.order;
 CREATE TABLE IF NOT EXISTS public.order (
     id VARCHAR PRIMARY KEY,
-    consumer VARCHAR NOT NULL,
+    customer VARCHAR NOT NULL,
     itemIds TEXT NOT NULL,
-    status VARCHAR NOT NULL,
     status VARCHAR NOT NULL,
     commStatus VARCHAR NOT NULL,
     totalPrice FLOAT NOT NULL,
     requestId VARCHAR NOT NULL,
-    UNIQUE (id, requestId, consumer)
+    deliveryTime VARCHAR NOT NULL,
+    UNIQUE (id, requestId, customer)
 );
 
 DROP TABLE IF EXISTS public.short_item;
@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS public.ordered_item (
    name VARCHAR NOT NULL,
    price FLOAT NOT NULL,
    quantity INTEGER NOT NULL,
+   orderid VARCHAR NOT NULL,
    UNIQUE (name)
 );
 
@@ -55,9 +56,20 @@ CREATE TABLE IF NOT EXISTS public.reserved_item (
 );
 
 -- PAYMENT Service
-DROP TABLE IF EXISTS public.consumer_account;
-CREATE TABLE IF NOT EXISTS public.item (
-   consumer_id VARCHAR PRIMARY KEY,
+
+
+-- BILLING Service
+DROP TABLE IF EXISTS public.customer CASCADE;
+CREATE TABLE IF NOT EXISTS public.customer (
+  id VARCHAR PRIMARY KEY,
+  name VARCHAR NOT NULL,
+  status VARCHAR NOT NULL
+);
+
+DROP TABLE IF EXISTS public.account;
+CREATE TABLE IF NOT EXISTS public.account (
+   id VARCHAR PRIMARY KEY,
+   customer_id VARCHAR NOT NULL references public.customer(id),
    balance VARCHAR NOT NULL,
    status VARCHAR NOT NULL
 );
