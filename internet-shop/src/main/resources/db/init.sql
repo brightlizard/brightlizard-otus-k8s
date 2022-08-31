@@ -76,12 +76,18 @@ CREATE TABLE IF NOT EXISTS public.customer (
   status VARCHAR NOT NULL
 );
 
+INSERT INTO customer(id, name, status) VALUES
+('00000000-0000-0000-00000000', 'Awesome customer', 'ACTIVE');
+
 DROP TABLE IF EXISTS public.account;
 CREATE TABLE IF NOT EXISTS public.account (
    id VARCHAR PRIMARY KEY,
    customer_id VARCHAR NOT NULL references public.customer(id),
-   balance VARCHAR NOT NULL,
+   balance FLOAT NOT NULL,
    status VARCHAR NOT NULL
 );
+
+INSERT INTO account(id, customer_id, balance, status) VALUES
+('10000000-0000-0000-00000001', '00000000-0000-0000-00000000', 526000.00, 'ACTIVE');
 
 -- DELIVERY Service

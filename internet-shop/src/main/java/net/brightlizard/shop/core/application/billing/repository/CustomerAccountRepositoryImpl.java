@@ -2,9 +2,12 @@ package net.brightlizard.shop.core.application.billing.repository;
 
 import net.brightlizard.shop.core.application.billing.model.CustomerAccount;
 import net.brightlizard.shop.core.application.billing.model.CustomerAccountStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import java.util.ArrayList;
-import java.util.HashMap;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -14,24 +17,59 @@ import java.util.List;
 @Repository
 public class CustomerAccountRepositoryImpl implements CustomerAccountRepository {
 
-    private HashMap<String, CustomerAccount> customerById = new HashMap<>(){{
-        put("00000000-0000-0000-00000000", new CustomerAccount("00000000-0000-0000-00000000", 526000.00, CustomerAccountStatus.ACTIVE));
-    }};
+    private JdbcTemplate jdbcTemplate;
+
+    public CustomerAccountRepositoryImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
 
     @Override
     public CustomerAccount findById(String id) {
-        return new CustomerAccount(customerById.get(id));
+        CustomerAccount customerAccount = jdbcTemplate.queryForObject(
+                "SELECT * FROM internet_shop.public.account WHERE customer_id = ?",
+                (rs, rowNum) -> new CustomerAccount(
+                    rs.getString("id"),
+                    rs.getString("customer_id"),
+                    rs.getDouble("balance"),
+                    CustomerAccountStatus.valueOf(rs.getString("status"))
+                ),
+                id
+        );
+        return customerAccount;
     }
 
     @Override
     public List<CustomerAccount> findAll() {
-        return new ArrayList<>(customerById.values());
+        String SQL = "SELECT * FROM internet_shop.public.account";
+        List<CustomerAccount> customerAccounts = jdbcTemplate.query(
+                SQL, (rs, rowNum) -> new CustomerAccount(
+                        rs.getString("id"),
+                        rs.getString("customer_id"),
+                        rs.getDouble("balance"),
+                        CustomerAccountStatus.valueOf(rs.getString("status"))
+                )
+        );
+
+        return customerAccounts;
     }
 
     @Override
     public CustomerAccount update(CustomerAccount customerAccount) {
-        return customerById.put(customerAccount.getCustomerId(), new CustomerAccount(customerAccount));
+        String SQL = "UPDATE internet_shop.public.account " +
+                "SET customer_id = ?, " +
+                "balance = ?, " +
+                "status = ? " +
+                "WHERE id = ?";
+        jdbcTemplate.update(
+                SQL,
+                customerAccount.getCustomerId(),
+                customerAccount.getBalance(),
+                customerAccount.getStatus().toString(),
+                customerAccount.getId()
+        );
+
+        return customerAccount;
     }
 
 }

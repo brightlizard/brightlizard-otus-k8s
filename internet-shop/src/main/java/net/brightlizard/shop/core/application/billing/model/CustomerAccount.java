@@ -1,6 +1,5 @@
 package net.brightlizard.shop.core.application.billing.model;
 
-import javax.persistence.Entity;
 import java.util.Objects;
 
 /**
@@ -9,11 +8,13 @@ import java.util.Objects;
  */
 public class CustomerAccount {
 
+    private String id;
     private String customerId;
     private double balance;
     private CustomerAccountStatus status;
 
-    public CustomerAccount(String customerId, double balance, CustomerAccountStatus status) {
+    public CustomerAccount(String id, String customerId, double balance, CustomerAccountStatus status) {
+        this.id = id;
         this.customerId = customerId;
         this.balance = balance;
         this.status = status;
@@ -23,6 +24,14 @@ public class CustomerAccount {
         setCustomerId(customerAccount.getCustomerId());
         setBalance(customerAccount.getBalance());
         setStatus(customerAccount.getStatus());
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCustomerId() {
@@ -52,14 +61,16 @@ public class CustomerAccount {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CustomerAccount)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         CustomerAccount that = (CustomerAccount) o;
-        return Double.compare(that.balance, balance) == 0 && Objects.equals(customerId, that.customerId) && status == that.status;
+        return Double.compare(that.balance, balance) == 0 &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(customerId, that.customerId) &&
+                status == that.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(customerId, balance, status);
+        return Objects.hash(id, customerId, balance, status);
     }
-
 }
