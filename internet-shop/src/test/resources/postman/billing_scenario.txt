@@ -1,0 +1,17 @@
+1.Создать пользователя. Должен создаться аккаунт в биллинге.
+Уже есть один кастомер в системе - Awesome customer
+
+Создаем нового.
+POST http://localhost:4321/customer
+Content-Type: application/json
+
+{
+    "name": "Mega customer"
+}
+
+Проверяем.
+GET http://localhost:4321/customer
+
+Должно вернуться два кастомера: Awesome customer, Mega customer
+
+2.Положить деньги на счет пользователя через сервис биллинга.

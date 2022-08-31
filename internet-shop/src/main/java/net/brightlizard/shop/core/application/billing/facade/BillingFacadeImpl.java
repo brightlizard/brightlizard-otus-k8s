@@ -1,5 +1,6 @@
 package net.brightlizard.shop.core.application.billing.facade;
 
+import net.brightlizard.shop.core.application.billing.BillingService;
 import net.brightlizard.shop.core.application.billing.model.Customer;
 import net.brightlizard.shop.core.application.billing.model.CustomerAccount;
 import net.brightlizard.shop.core.application.billing.repository.CustomerAccountRepository;
@@ -14,14 +15,16 @@ import java.util.List;
 public class BillingFacadeImpl implements BillingFacade {
 
     private CustomerAccountRepository customerAccountRepository;
+    private BillingService billingService;
 
-    public BillingFacadeImpl(CustomerAccountRepository customerAccountRepository) {
+    public BillingFacadeImpl(CustomerAccountRepository customerAccountRepository, BillingService billingService) {
         this.customerAccountRepository = customerAccountRepository;
+        this.billingService = billingService;
     }
 
     @Override
     public List<Customer> getCustomers() {
-        return null;
+        return customerAccountRepository.findAllCustomers();
     }
 
     @Override
@@ -31,7 +34,7 @@ public class BillingFacadeImpl implements BillingFacade {
 
     @Override
     public Customer createCustomer(Customer customer) {
-        return null;
+        return billingService.createCustomer(customer);
     }
 
 }

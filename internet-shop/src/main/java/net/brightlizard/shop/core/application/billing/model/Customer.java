@@ -25,6 +25,12 @@ public class Customer {
         this.account = account;
     }
 
+    public Customer(String id, String name, CustomerStatus status) {
+        this.id = id;
+        this.name = name;
+        this.status = status;
+    }
+
     public String getId() {
         return id;
     }

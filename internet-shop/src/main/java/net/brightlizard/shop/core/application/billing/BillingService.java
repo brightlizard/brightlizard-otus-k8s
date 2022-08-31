@@ -1,9 +1,6 @@
 package net.brightlizard.shop.core.application.billing;
 
-import net.brightlizard.shop.core.application.billing.model.DepositStatus;
-import net.brightlizard.shop.core.application.billing.model.WithdrawStatus;
-import net.brightlizard.shop.core.application.billing.model.DepositRequest;
-import net.brightlizard.shop.core.application.billing.model.WithdrawRequest;
+import net.brightlizard.shop.core.application.billing.model.*;
 
 /**
  * @author Ovcharov Ilya (IAOvcharov@sberbank.ru; ovcharov.ilya@gmail.com)
@@ -11,8 +8,8 @@ import net.brightlizard.shop.core.application.billing.model.WithdrawRequest;
  */
 public interface BillingService {
 
+    Customer createCustomer(Customer customer);
     WithdrawStatus withdraw(WithdrawRequest withdrawRequest);
     DepositStatus deposit(DepositRequest depositRequest);
-
 
 }

@@ -18,16 +18,17 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/customer")
-public class CustomerController {
+@RequestMapping("/billing")
+public class BillingController {
 
     private BillingFacade billingFacade;
 
-    public CustomerController(BillingFacade paymentFacade) {
+    public BillingController(BillingFacade paymentFacade) {
         this.billingFacade = paymentFacade;
     }
 
     @PostMapping(
+        value = "/customer",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<CreatedCustomer> createCustomer(@Valid @RequestBody NewCustomer newCustomer){
@@ -36,10 +37,11 @@ public class CustomerController {
     }
 
     @GetMapping(
+        value = "/customer",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<Customer>> getCustomers(){
-        return new ResponseEntity(billingFacade.getCustomerAccounts(), HttpStatus.OK);
+        return new ResponseEntity(billingFacade.getCustomers(), HttpStatus.OK);
     }
 
     @GetMapping(

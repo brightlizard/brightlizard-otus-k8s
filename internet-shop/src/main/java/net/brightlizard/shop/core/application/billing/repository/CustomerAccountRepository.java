@@ -1,7 +1,7 @@
 package net.brightlizard.shop.core.application.billing.repository;
 
+import net.brightlizard.shop.core.application.billing.model.Customer;
 import net.brightlizard.shop.core.application.billing.model.CustomerAccount;
-import org.springframework.data.repository.Repository;
 import java.util.List;
 
 /**
@@ -10,8 +10,9 @@ import java.util.List;
  */
 public interface CustomerAccountRepository /*extends Repository<CustomerAccount, String>*/ {
 
+    Customer createCustomerAndAccount(Customer customer);
     CustomerAccount findById(String id);
     List<CustomerAccount> findAll();
     CustomerAccount update(CustomerAccount customerAccount);
-
+    List<Customer> findAllCustomers();
 }

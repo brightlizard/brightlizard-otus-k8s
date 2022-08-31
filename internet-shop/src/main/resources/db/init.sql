@@ -73,7 +73,8 @@ DROP TABLE IF EXISTS public.customer CASCADE;
 CREATE TABLE IF NOT EXISTS public.customer (
   id VARCHAR PRIMARY KEY,
   name VARCHAR NOT NULL,
-  status VARCHAR NOT NULL
+  status VARCHAR NOT NULL,
+  UNIQUE (name)
 );
 
 INSERT INTO customer(id, name, status) VALUES
