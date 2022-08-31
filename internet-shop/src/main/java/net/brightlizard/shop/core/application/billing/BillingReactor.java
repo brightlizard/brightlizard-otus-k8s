@@ -60,7 +60,7 @@ public class BillingReactor extends AbstractVerticle {
         return message -> {
             DepositRequest depositRequest = (DepositRequest) SerializationUtils.deserialize((byte[]) message.body());
             DepositStatus depositStatus = billingService.deposit(depositRequest);
-            message.reply(SerializationUtils.serialize(depositStatus));
+            message.reply(SerializationUtils.serialize(new DepositResponse(depositStatus)));
         };
     }
 }

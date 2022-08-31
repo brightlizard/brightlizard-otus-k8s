@@ -49,11 +49,12 @@ public class OrderRepositoryImpl implements OrderRepository {
         );
 
         order.getShortItems().forEach(shortItem -> {
-            String SQL2 = "INSERT INTO internet_shop.public.short_item(id, quantity) VALUES (?,?)";
+            String SQL2 = "INSERT INTO internet_shop.public.short_item(id, quantity, orderid) VALUES (?,?,?)";
             jdbcTemplate.update(
                 SQL2,
                 shortItem.getId(),
-                shortItem.getQuantity()
+                shortItem.getQuantity(),
+                order.getId()
             );
         });
 
