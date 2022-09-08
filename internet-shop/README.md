@@ -1,5 +1,5 @@
-sudo docker build -t brightlizard/brightlizard-otus-internet-shop-app:1.0.1 .
-sudo docker run -p 4321:4321 brightlizard/brightlizard-otus-internet-shop-app:1.0.1
+sudo docker build -t brightlizard/brightlizard-otus-internet-shop-app:1.3.0 .
+sudo docker run -p 4321:4321 brightlizard/brightlizard-otus-internet-shop-app:1.3.0
 
 -------- HELM --------
 sudo helm install --debug otus-internet-shop-app ./otus-internet-shop-app/
