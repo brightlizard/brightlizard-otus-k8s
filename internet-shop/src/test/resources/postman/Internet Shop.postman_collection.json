@@ -17,13 +17,13 @@
 					},
 					{
 						"key": "X-Request-Id",
-						"value": "1234567890++",
+						"value": "123456789+",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"consumer\": \"00000000-0000-0000-00000000\",\n    \"items\": [\n        {\n            \"id\": \"92e59fbf-d6e1-4636-bc3b-825cc7390be8\",\n            \"quantity\": 3\n        },\n        {\n            \"id\": \"07b676b3-5953-471d-9f20-26c48fe0bab1\",\n            \"quantity\": 3\n        }\n    ],\n    \"deliveryTime\": \"2022-08-17T15:00:00\"\n}"
+					"raw": "{\n    \"customer\": \"{{customer_id}}\",\n    \"items\": [\n        {\n            \"id\": \"92e59fbf-d6e1-4636-bc3b-825cc7390be8\",\n            \"quantity\": 3\n        },\n        {\n            \"id\": \"07b676b3-5953-471d-9f20-26c48fe0bab1\",\n            \"quantity\": 3\n        }\n    ],\n    \"deliveryTime\": \"2022-08-17T23:00:00\"\n}"
 				},
 				"url": {
 					"raw": "http://arch.homework/order",
@@ -105,26 +105,6 @@
 			"response": []
 		},
 		{
-			"name": "http://arch.homework/customer/account",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://arch.homework/customer/account",
-					"protocol": "http",
-					"host": [
-						"arch",
-						"homework"
-					],
-					"path": [
-						"customer",
-						"account"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "http://arch.homework/actuator/info",
 			"request": {
 				"method": "GET",
@@ -139,6 +119,152 @@
 					"path": [
 						"actuator",
 						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://arch.homework/billing/customer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"customer_id\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Otus customer\"\n}"
+				},
+				"url": {
+					"raw": "http://arch.homework/billing/customer",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"billing",
+						"customer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://arch.homework/billing/customer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://arch.homework/billing/customer",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"billing",
+						"customer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://arch.homework/billing/customer/{{customer_id}}/account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://arch.homework/billing/customer/{{customer_id}}/account",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"billing",
+						"customer",
+						"{{customer_id}}",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://arch.homework/billing/customer/{{customer_id}}/account",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"deposit_value\": 1000.00\n}"
+				},
+				"url": {
+					"raw": "http://arch.homework/billing/customer/{{customer_id}}/account",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"billing",
+						"customer",
+						"{{customer_id}}",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://arch.homework/notification",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://arch.homework/notification",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"notification"
 					]
 				}
 			},
