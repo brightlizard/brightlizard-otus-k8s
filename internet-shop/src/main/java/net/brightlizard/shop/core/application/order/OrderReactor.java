@@ -6,9 +6,9 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
-import net.brightlizard.shop.core.application.order.model.Order;
-import net.brightlizard.shop.core.application.order.model.OrderCommStatus;
-import net.brightlizard.shop.core.application.order.model.OrderStatus;
+import net.brightlizard.shop.core.application.notification.model.Notification;
+import net.brightlizard.shop.core.application.notification.model.NotificationStatus;
+import net.brightlizard.shop.core.application.order.model.*;
 import net.brightlizard.shop.core.application.order.repository.OrderRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,9 +101,17 @@ public class OrderReactor extends AbstractVerticle {
             order = orderRepository.updateStatus(order);
             if(order.getStatus().equals(OrderStatus.PAYMENT_SUCCESS)){
                 scheduleDelivery(order);
+                eventBus.send(
+                 "notification.billing",
+                    SerializationUtils.serialize(new Notification(order.getId(), NotificationStatus.EVERYTHING_GOOD))
+                );
             }
             if(order.getStatus().equals(OrderStatus.PAYMENT_ERROR)){
                 rollbackReservation(order);
+                eventBus.send(
+                    "notification.billing",
+                    SerializationUtils.serialize(new Notification(order.getId(), NotificationStatus.ALL_BAD))
+                );
             }
         };
     }

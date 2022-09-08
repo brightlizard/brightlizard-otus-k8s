@@ -18,10 +18,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     private Logger LOGGER = LoggerFactory.getLogger(DeliveryServiceImpl.class);
 
-    private HashMap<LocalDateTime, LocalDateTime> scheduledTime = new HashMap<>(){{
-        put(LocalDateTime.parse("2022-08-17T12:00:00"), LocalDateTime.parse("2022-08-17T13:00:00"));
-        put(LocalDateTime.parse("2022-08-17T18:00:00"), LocalDateTime.parse("2022-08-17T19:00:00"));
-    }};
+    private HashMap<LocalDateTime, LocalDateTime> scheduledTime = new HashMap<>();
 
     @Override
     public Order schedule(Order order) {

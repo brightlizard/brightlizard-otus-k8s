@@ -4,12 +4,10 @@ import net.brightlizard.shop.core.application.billing.model.Customer;
 import net.brightlizard.shop.core.application.billing.model.CustomerAccount;
 import net.brightlizard.shop.core.application.billing.model.CustomerAccountStatus;
 import net.brightlizard.shop.core.application.billing.model.CustomerStatus;
-import net.brightlizard.shop.core.application.order.model.ShortItem;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author Ovcharov Ilya (IAOvcharov@sberbank.ru; ovcharov.ilya@gmail.com)
@@ -149,6 +147,20 @@ public class CustomerAccountRepositoryImpl implements CustomerAccountRepository 
         });
 
         return customers;
+    }
+
+    @Override
+    public Customer findCustomerById(String id) {
+        Customer customer = jdbcTemplate.queryForObject(
+            "SELECT * FROM internet_shop.public.customer WHERE id = ?",
+            (rs, rowNum) -> new Customer(
+                    rs.getString("id"),
+                    rs.getString("name"),
+                    CustomerStatus.valueOf(rs.getString("status"))
+            ),
+            id
+        );
+        return customer;
     }
 
 }

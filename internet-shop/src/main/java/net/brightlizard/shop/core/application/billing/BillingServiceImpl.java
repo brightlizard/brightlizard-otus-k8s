@@ -57,4 +57,14 @@ public class BillingServiceImpl implements BillingService {
         }
     }
 
+    @Override
+    public Customer getCustomer(String customerId) {
+        return customerAccountRepository.findCustomerById(customerId);
+    }
+
+    @Override
+    public CustomerAccount getCustomerAccount(String customerId) {
+        return customerAccountRepository.findById(customerId);
+    }
+
 }

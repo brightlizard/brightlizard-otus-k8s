@@ -11,5 +11,6 @@ public interface BillingService {
     Customer createCustomer(Customer customer);
     WithdrawStatus withdraw(WithdrawRequest withdrawRequest);
     DepositStatus deposit(DepositRequest depositRequest);
-
+    Customer getCustomer(String customerId);
+    CustomerAccount getCustomerAccount(String customerId);
 }

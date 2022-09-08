@@ -33,6 +33,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "otus-internet-shop-app.fullname" . }}-config
           ports:
             - name: http
               containerPort: 4321
@@ -51,6 +54,10 @@ spec:
             initialDelaySeconds: 20
             periodSeconds: 5
             timeoutSeconds: 60
+#          volumeMounts:
+#            - name: init-db
+#              mountPath: "/db"
+#              readOnly: true
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -65,3 +72,10 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+#      volumes:
+#        - name: init-db
+#          configMap:
+#            name: {{ include "otus-internet-shop-app.fullname" . }}-config
+#            items:
+#              - key: "init.sql"
+#                path: "init.sql"

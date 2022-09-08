@@ -9,16 +9,21 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/internet_shop
+    url: jdbc:postgresql://localhost:5432/internet_shop?createDatabaseIfNotExist=true
     username: postgres
     password: qwerty99
     hikari:
       connectionTimeout: 20000
       maximumPoolSize: 5
+    driver-class-name: org.postgresql.Driver
+    initialization-mode: always
   jpa:
+    generate-ddl: true
     hibernate:
       show-sql: true
-      ddl-auto: none
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    database: postgresql
   sql:
     init:
       mode: always

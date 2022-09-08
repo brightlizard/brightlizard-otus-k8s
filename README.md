@@ -44,6 +44,8 @@ sudo minikube start --vm-driver=none
 sudo minikube addons enable ingress
 
 
+sudo minikube start --driver virtualbox --cpus=4 --memory=8g --cni=flannel --kubernetes-version="v1.19.0" --force
+
 --- Prometheus ---
 sudo helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 sudo helm repo add stable https://charts.helm.sh/stable

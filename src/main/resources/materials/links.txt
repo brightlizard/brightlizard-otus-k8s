@@ -5,3 +5,5 @@ https://habr.com/ru/post/428127/
 http://thesecretlivesofdata.com/raft/
 https://gyuho.dev/paxos-etcd-vs-nakamoto-bitcoin-consensus.html#what-is-nakamoto-consensus
 https://awinterman.github.io/simple-scuttle/
+
+https://habr.com/ru/post/589091/

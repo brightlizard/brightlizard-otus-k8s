@@ -8,7 +8,7 @@ image:
   repository: brightlizard/brightlizard-otus-internet-shop-app
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.0.1"
+  tag: "1.2.0"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -85,19 +85,22 @@ tolerations: []
 affinity: {}
 
 
-springDatasourceUrl: jdbc:postgresql://internet-shop-postgres.otus.svc.cluster.local:5432/internet-shop
+springDatasourceUrl: jdbc:postgresql://otus-internet-shop-app-postgresql.otus.svc.cluster.local:5432/internet_shop
 
 postgresql:
   auth:
     username: postgres2
     password: postgres2
-    database: otus
+    database: internet_shop
   enabled: true
   postgresqlUsername: postgres2
   postgresqlPassword: postgres2
-  postgresqlDatabase: otus
+  postgresqlDatabase: internet_shop
   service:
     port: "5432"
+#  initdbScripts:
+#    init.sql: |
+#      CREATE DATABASE ishop;
 
 #metrics:
 #  serviceMonitor:

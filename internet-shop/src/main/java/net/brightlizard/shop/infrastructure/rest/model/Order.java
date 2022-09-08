@@ -15,7 +15,7 @@ import java.util.Objects;
 public class Order {
 
     @NotNull
-    @JsonProperty(value = "consumer", required = true)
+    @JsonProperty(value = "customer", required = true)
     private String consumer;
 
     @Size(min = 1)

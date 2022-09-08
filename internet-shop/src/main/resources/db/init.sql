@@ -89,6 +89,14 @@ CREATE TABLE IF NOT EXISTS public.account (
 );
 
 INSERT INTO account(id, customer_id, balance, status) VALUES
-('10000000-0000-0000-00000001', '00000000-0000-0000-00000000', 526000.00, 'ACTIVE');
+('10000000-0000-0000-00000001', '00000000-0000-0000-00000000', 0.00, 'ACTIVE');
 
 -- DELIVERY Service
+
+
+-- Notifications
+DROP TABLE IF EXISTS public.notification;
+CREATE TABLE IF NOT EXISTS public.notification (
+  order_id VARCHAR NOT NULL,
+  status VARCHAR NOT NULL
+);

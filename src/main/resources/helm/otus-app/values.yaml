@@ -101,5 +101,5 @@ postgresql:
 
 metrics:
   serviceMonitor:
-    enabled: true
+    enabled: false
 

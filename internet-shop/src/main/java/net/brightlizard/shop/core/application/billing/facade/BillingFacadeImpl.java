@@ -3,6 +3,8 @@ package net.brightlizard.shop.core.application.billing.facade;
 import net.brightlizard.shop.core.application.billing.BillingService;
 import net.brightlizard.shop.core.application.billing.model.Customer;
 import net.brightlizard.shop.core.application.billing.model.CustomerAccount;
+import net.brightlizard.shop.core.application.billing.model.DepositRequest;
+import net.brightlizard.shop.core.application.billing.model.DepositResponse;
 import net.brightlizard.shop.core.application.billing.repository.CustomerAccountRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -35,6 +37,21 @@ public class BillingFacadeImpl implements BillingFacade {
     @Override
     public Customer createCustomer(Customer customer) {
         return billingService.createCustomer(customer);
+    }
+
+    @Override
+    public Customer getCustomer(String customerId) {
+        return billingService.getCustomer(customerId);
+    }
+
+    @Override
+    public CustomerAccount getCustomerAccount(String customerId) {
+        return billingService.getCustomerAccount(customerId);
+    }
+
+    @Override
+    public DepositResponse deposit(DepositRequest depositRequest) {
+        return new DepositResponse(billingService.deposit(depositRequest));
     }
 
 }

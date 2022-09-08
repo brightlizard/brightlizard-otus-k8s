@@ -6,6 +6,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import net.brightlizard.shop.core.application.billing.BillingReactor;
 import net.brightlizard.shop.core.application.delivery.DeliveryReactor;
+import net.brightlizard.shop.core.application.notification.NotificationReactor;
 import net.brightlizard.shop.core.application.order.OrderReactor;
 import net.brightlizard.shop.core.application.payment.PaymentReactor;
 import net.brightlizard.shop.core.application.storage.StorageReactor;
@@ -52,6 +53,10 @@ public class VerticleDeployService {
 
         String billingReactorName = SpringVerticleFactory.VERTICLE_PREFIX + ':' + BillingReactor.class.getName();
         vertx.deployVerticle(billingReactorName, deploymentOptions, this::handleDeploymentId);
+        LOGGER.info("Deployment IDs -> {}", getDepIds());
+
+        String notificationReactorName = SpringVerticleFactory.VERTICLE_PREFIX + ':' + NotificationReactor.class.getName();
+        vertx.deployVerticle(notificationReactorName, deploymentOptions, this::handleDeploymentId);
         LOGGER.info("Deployment IDs -> {}", getDepIds());
     }
 

@@ -15,4 +15,6 @@ public interface CustomerAccountRepository /*extends Repository<CustomerAccount,
     List<CustomerAccount> findAll();
     CustomerAccount update(CustomerAccount customerAccount);
     List<Customer> findAllCustomers();
+    Customer findCustomerById(String id);
+
 }
