@@ -101,19 +101,20 @@ public class OrderReactor extends AbstractVerticle {
             order = orderRepository.updateStatus(order);
             if(order.getStatus().equals(OrderStatus.PAYMENT_SUCCESS)){
                 scheduleDelivery(order);
-                eventBus.send(
-                 "notification.billing",
-                    SerializationUtils.serialize(new Notification(order.getId(), NotificationStatus.EVERYTHING_GOOD))
-                );
+                sendNotification(order, NotificationStatus.EVERYTHING_GOOD);
             }
             if(order.getStatus().equals(OrderStatus.PAYMENT_ERROR)){
                 rollbackReservation(order);
-                eventBus.send(
-                    "notification.billing",
-                    SerializationUtils.serialize(new Notification(order.getId(), NotificationStatus.ALL_BAD))
-                );
+                sendNotification(order, NotificationStatus.ALL_BAD);
             }
         };
+    }
+
+    private void sendNotification(Order order, NotificationStatus status) {
+        eventBus.send(
+                "notification.billing",
+                SerializationUtils.serialize(new Notification(order.getId(), status))
+        );
     }
 
     private void scheduleDelivery(Order order) {
@@ -179,6 +180,7 @@ public class OrderReactor extends AbstractVerticle {
             order = orderRepository.updateStatus(order);
             if(order.getStatus().equals(OrderStatus.PAYMENT_ROLLBACK)){
                 LOGGER.info("PAYMENT ROLLBACK FOR -> {}", order);
+                sendNotification(order, NotificationStatus.ALL_BAD);
             }
         };
     }
