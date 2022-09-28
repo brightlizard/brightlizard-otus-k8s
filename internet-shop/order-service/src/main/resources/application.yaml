@@ -1,0 +1,50 @@
+server:
+  port: 44441
+
+logging:
+  level:
+    root: ERROR
+    org.springframework.web: DEBUG
+    net.brightlizard: DEBUG
+    com.hazelcast: INFO
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/internet_shop?createDatabaseIfNotExist=true
+    username: postgres
+    password: qwerty99
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5
+    driver-class-name: org.postgresql.Driver
+    initialization-mode: always
+  jpa:
+    generate-ddl: true
+    hibernate:
+      show-sql: true
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    database: postgresql
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/init.sql
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info,prometheus
+      base-path: /actuator
+      path-mapping:
+        prometheus: metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true

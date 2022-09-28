@@ -1,8 +1,9 @@
 package net.brightlizard.shop.core.application.storage;
 
-import net.brightlizard.shop.core.application.order.model.Order;
-import net.brightlizard.shop.core.application.order.model.OrderStatus;
-import net.brightlizard.shop.core.application.order.model.ShortItem;
+import net.brightlizard.shop.event.model.order.ItemEventModel;
+import net.brightlizard.shop.event.model.order.OrderEventModel;
+import net.brightlizard.shop.event.model.order.OrderStatusEventModel;
+import net.brightlizard.shop.event.model.order.ShortItemEventModel;
 import net.brightlizard.shop.core.application.storage.model.Item;
 import net.brightlizard.shop.core.application.storage.repolsitory.ItemRepository;
 import org.springframework.stereotype.Service;
@@ -24,14 +25,14 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public Order reserve(Order order) {
+    public OrderEventModel reserve(OrderEventModel order) {
         try {
-            List<ShortItem> shortItems = order.getShortItems();
-            List<String> shortItemIds = shortItems.stream().map(ShortItem::getId).collect(Collectors.toList());
-            Map<String, Integer> quantityById = shortItems.stream().collect(Collectors.toMap(ShortItem::getId, ShortItem::getQuantity));
+            List<ShortItemEventModel> shortItems = order.getShortItems();
+            List<String> shortItemIds = shortItems.stream().map(ShortItemEventModel::getId).collect(Collectors.toList());
+            Map<String, Integer> quantityById = shortItems.stream().collect(Collectors.toMap(ShortItemEventModel::getId, ShortItemEventModel::getQuantity));
 
             if(!itemRepository.containsAllItems(shortItemIds)){
-                order.setStatus(OrderStatus.STORAGE_RESERVE_ERROR);
+                order.setStatus(OrderStatusEventModel.STORAGE_RESERVE_ERROR);
                 return order;
             }
 
@@ -49,22 +50,25 @@ public class StorageServiceImpl implements StorageService {
             updatedItems.forEach(item -> {
                 item.setQuantity(quantityById.get(item.getId()));
             });
+            List<ItemEventModel> itemEventModelList = updatedItems.stream()
+                    .map(item -> new ItemEventModel(item.getId(), item.getName(), item.getPrice(), item.getQuantity()))
+                    .collect(Collectors.toList());
             // TODO: reserved
-            order.setOrderedItems(updatedItems);
-            order.setStatus(OrderStatus.STORAGE_RESERVE_SUCCESS);
+            order.setOrderedItems(itemEventModelList);
+            order.setStatus(OrderStatusEventModel.STORAGE_RESERVE_SUCCESS);
             return order;
         } catch (Exception e) {
             e.printStackTrace();
-            order.setStatus(OrderStatus.STORAGE_RESERVE_ERROR);
+            order.setStatus(OrderStatusEventModel.STORAGE_RESERVE_ERROR);
             return order;
         }
     }
 
     @Override
-    public Order rollback(Order order) {
-        List<ShortItem> shortItems = order.getShortItems();
-        List<String> shortItemIds = shortItems.stream().map(ShortItem::getId).collect(Collectors.toList());
-        Map<String, Integer> quantityById = shortItems.stream().collect(Collectors.toMap(ShortItem::getId, ShortItem::getQuantity));
+    public OrderEventModel rollback(OrderEventModel order) {
+        List<ShortItemEventModel> shortItems = order.getShortItems();
+        List<String> shortItemIds = shortItems.stream().map(ShortItemEventModel::getId).collect(Collectors.toList());
+        Map<String, Integer> quantityById = shortItems.stream().collect(Collectors.toMap(ShortItemEventModel::getId, ShortItemEventModel::getQuantity));
 
         List<Item> allItems = itemRepository.findAllItems(shortItemIds);
         allItems.forEach(item -> {
@@ -73,7 +77,7 @@ public class StorageServiceImpl implements StorageService {
             item.setQuantity(result);
         });
         itemRepository.updateQuantity(allItems);
-        order.setStatus(OrderStatus.STORAGE_RESERVE_ROLLBACK);
+        order.setStatus(OrderStatusEventModel.STORAGE_RESERVE_ROLLBACK);
         return order;
     }
 

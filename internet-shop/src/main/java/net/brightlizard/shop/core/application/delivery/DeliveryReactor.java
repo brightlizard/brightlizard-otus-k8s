@@ -6,7 +6,8 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
-import net.brightlizard.shop.core.application.order.model.Order;
+import net.brightlizard.shop.event.model.order.OrderEventModel;
+import net.brightlizard.shop.infrastructure.vertx.VertxContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -30,8 +31,8 @@ public class DeliveryReactor extends AbstractVerticle {
     private EventBus eventBus;
     private DeliveryService deliveryService;
 
-    public DeliveryReactor(Vertx vertx, DeliveryService deliveryService) {
-        this.vertx = vertx;
+    public DeliveryReactor(VertxContainer vertxContainer, DeliveryService deliveryService) {
+        this.vertx = vertxContainer.getVertx();
         this.eventBus = vertx.eventBus();
         this.deliveryService = deliveryService;
     }
@@ -47,8 +48,8 @@ public class DeliveryReactor extends AbstractVerticle {
     private Handler<Message<Object>> scheduleDeliveryHandler() {
         return message -> {
             message.reply("success");
-            Order order = (Order) SerializationUtils.deserialize((byte[]) message.body());
-            Order scheduledOrder = deliveryService.schedule(order);
+            OrderEventModel order = (OrderEventModel) SerializationUtils.deserialize((byte[]) message.body());
+            OrderEventModel scheduledOrder = deliveryService.schedule(order);
             eventBus.send("schedule_delivery_reply", SerializationUtils.serialize(scheduledOrder));
         };
     }

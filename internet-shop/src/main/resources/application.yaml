@@ -1,11 +1,12 @@
 server:
-  port: 4321
+  port: 44442
 
 logging:
   level:
     root: ERROR
     org.springframework.web: DEBUG
     net.brightlizard: DEBUG
+    com.hazelcast: INFO
 
 spring:
   datasource:

@@ -6,7 +6,8 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
-import net.brightlizard.shop.core.application.order.model.Order;
+import net.brightlizard.shop.event.model.order.OrderEventModel;
+import net.brightlizard.shop.infrastructure.vertx.VertxContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -30,8 +31,8 @@ public class PaymentReactor extends AbstractVerticle {
     private EventBus eventBus;
     private PaymentService paymentService;
 
-    public PaymentReactor(Vertx vertx, PaymentService paymentService) {
-        this.vertx = vertx;
+    public PaymentReactor(VertxContainer vertxContainer, PaymentService paymentService) {
+        this.vertx = vertxContainer.getVertx();
         this.eventBus = vertx.eventBus();
         this.paymentService = paymentService;
     }
@@ -48,7 +49,7 @@ public class PaymentReactor extends AbstractVerticle {
     private Handler<Message<Object>> paymentDoHandler() {
         return message -> {
             message.reply("success");
-            Order order = (Order) SerializationUtils.deserialize((byte[]) message.body());
+            OrderEventModel order = (OrderEventModel) SerializationUtils.deserialize((byte[]) message.body());
             paymentService.process(order);
         };
     }
@@ -56,7 +57,7 @@ public class PaymentReactor extends AbstractVerticle {
     private Handler<Message<Object>> paymentDoRollbackHandler() {
         return message -> {
             message.reply("success");
-            Order order = (Order) SerializationUtils.deserialize((byte[]) message.body());
+            OrderEventModel order = (OrderEventModel) SerializationUtils.deserialize((byte[]) message.body());
             paymentService.rollback(order);
         };
     }

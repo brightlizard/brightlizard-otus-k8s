@@ -7,7 +7,10 @@ import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
 import net.brightlizard.shop.core.application.notification.model.Notification;
+import net.brightlizard.shop.core.application.notification.model.NotificationStatus;
 import net.brightlizard.shop.core.application.notification.repository.NotificationRepository;
+import net.brightlizard.shop.event.model.notification.NotificationEventModel;
+import net.brightlizard.shop.infrastructure.vertx.VertxContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -31,8 +34,8 @@ public class NotificationReactor extends AbstractVerticle {
     private EventBus eventBus;
     private NotificationRepository notificationRepository;
 
-    public NotificationReactor(Vertx vertx, NotificationRepository notificationRepository) {
-        this.vertx = vertx;
+    public NotificationReactor(VertxContainer vertxContainer, NotificationRepository notificationRepository) {
+        this.vertx = vertxContainer.getVertx();
         this.eventBus = vertx.eventBus();
         this.notificationRepository = notificationRepository;
     }
@@ -47,8 +50,9 @@ public class NotificationReactor extends AbstractVerticle {
         return message -> {
             LOGGER.info("NOTIFICATION FROM BILLING");
             try {
-                Notification notification = (Notification) SerializationUtils.deserialize((byte[]) message.body());
-                notificationRepository.save(notification);
+                NotificationEventModel notification = (NotificationEventModel) SerializationUtils.deserialize((byte[]) message.body());
+                Notification notification1 = new Notification(notification.getOrderId(), NotificationStatus.valueOf(notification.getNotificationStatus().name()));
+                notificationRepository.save(notification1);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -1,7 +1,7 @@
 package net.brightlizard.shop.core.application.delivery;
 
-import net.brightlizard.shop.core.application.order.model.Order;
-import net.brightlizard.shop.core.application.order.model.OrderStatus;
+import net.brightlizard.shop.event.model.order.OrderEventModel;
+import net.brightlizard.shop.event.model.order.OrderStatusEventModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     private HashMap<LocalDateTime, LocalDateTime> scheduledTime = new HashMap<>();
 
     @Override
-    public Order schedule(Order order) {
+    public OrderEventModel schedule(OrderEventModel order) {
 
         LocalDateTime deliveryTime = order.getDeliveryTime();
 
@@ -39,14 +39,14 @@ public class DeliveryServiceImpl implements DeliveryService {
         }
 
         if(intersection == true){
-            order.setStatus(OrderStatus.DELIVERY_ERROR);
+            order.setStatus(OrderStatusEventModel.DELIVERY_ERROR);
             return order;
         }
 
         scheduledTime.put(deliveryTime, deliveryTime.plusHours(1));
 
         LOGGER.info("SCHEDULED TIME: {}", scheduledTime);
-        order.setStatus(OrderStatus.DELIVERY_SUCCESS);
+        order.setStatus(OrderStatusEventModel.DELIVERY_SUCCESS);
         return order;
     }
 

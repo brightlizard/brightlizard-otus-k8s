@@ -7,6 +7,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
 import net.brightlizard.shop.core.application.billing.model.*;
+import net.brightlizard.shop.infrastructure.vertx.VertxContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -30,8 +31,8 @@ public class BillingReactor extends AbstractVerticle {
     private EventBus eventBus;
     private BillingService billingService;
 
-    public BillingReactor(Vertx vertx, BillingService billingService) {
-        this.vertx = vertx;
+    public BillingReactor(VertxContainer vertxContainer, BillingService billingService) {
+        this.vertx = vertxContainer.getVertx();
         this.eventBus = vertx.eventBus();
         this.billingService = billingService;
     }
