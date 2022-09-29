@@ -1,7 +1,6 @@
 package net.brightlizard.shop.order.core.repository;
 
 import net.brightlizard.shop.order.core.model.Order;
-import org.springframework.data.repository.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,5 +16,6 @@ public interface OrderRepository /*extends Repository<Order, String>*/ {
     Order update(Order order);
     Order updateStatusAndItems(Order order);
     Order updateStatus(Order order);
+    Order updateCommStatus(Order order);
     List<Order> findAll();
 }

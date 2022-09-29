@@ -4,6 +4,7 @@ metadata:
   name: {{ include "otus-internet-shop-app.fullname" . }}
   labels:
     {{- include "otus-internet-shop-app.labels" . | nindent 4 }}
+    component: k8s-dicovery
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -19,6 +20,7 @@ spec:
       {{- end }}
       labels:
         {{- include "otus-internet-shop-app.selectorLabels" . | nindent 8 }}
+        component: k8s-dicovery
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -38,22 +40,22 @@ spec:
                 name: {{ include "otus-internet-shop-app.fullname" . }}-config
           ports:
             - name: http
-              containerPort: 4321
+              containerPort: 44442
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /actuator/info
               port: http
-            initialDelaySeconds: 20
-            periodSeconds: 5
-            timeoutSeconds: 60
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 300
           readinessProbe:
             httpGet:
               path: /actuator/info
               port: http
-            initialDelaySeconds: 20
-            periodSeconds: 5
-            timeoutSeconds: 60
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 300
 #          volumeMounts:
 #            - name: init-db
 #              mountPath: "/db"

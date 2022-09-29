@@ -7,11 +7,12 @@ import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
-import net.brightlizard.shop.order.core.OrderReactor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.HashSet;
@@ -30,15 +31,40 @@ public class VertxContainer {
     private int instances = VertxOptions.DEFAULT_EVENT_LOOP_POOL_SIZE;
     private HashSet<String> depIds = new HashSet<>();
     private boolean ready = false;
+    private boolean multicastEnabled;
+    private boolean tcpipEnabled;
+    private boolean kubernetesEnabled;
+    private String kubernetesServiceDns;
     private SpringVerticleFactory springVerticleFactory;
 
-    public VertxContainer(SpringVerticleFactory springVerticleFactory) {
+    public VertxContainer(
+        @Value("${ishop.hz.network.multicast.enabled:false}") boolean multicastEnabled,
+        @Value("${ishop.hz.network.tcpip.enabled:false}") boolean tcpipEnabled,
+        @Value("${ishop.hz.network.kubernetes.enabled:false}") boolean kubernetesEnabled,
+        @Value("${ishop.hz.network.kubernetes.servicedns:k8s-dicovery-headless-service.otus.svc.cluster.local}") String kubernetesServiceDns,
+        SpringVerticleFactory springVerticleFactory
+    ) {
+        this.multicastEnabled = multicastEnabled;
+        this.tcpipEnabled = tcpipEnabled;
+        this.kubernetesEnabled = kubernetesEnabled;
+        this.kubernetesServiceDns = kubernetesServiceDns;
         this.springVerticleFactory = springVerticleFactory;
+
+        LOGGER.info("Muslicast discovery -> {}", this.multicastEnabled);
+        LOGGER.info("Tcp discovery -> {}", this.tcpipEnabled);
+        LOGGER.info("Kubernetes discovery -> {}", this.kubernetesEnabled);
+        LOGGER.info("Kubernetes service -> {}", this.kubernetesServiceDns);
 
         Config hazelcastConfig = new Config();
 
         hazelcastConfig.setClusterName("ishop");
-        hazelcastConfig.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(true);
+        hazelcastConfig.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(this.multicastEnabled);
+        hazelcastConfig.getNetworkConfig().getJoin().getTcpIpConfig().setEnabled(this.tcpipEnabled);
+        hazelcastConfig.getNetworkConfig()
+                .getJoin()
+                .getKubernetesConfig()
+                .setEnabled(this.kubernetesEnabled)
+                .setProperty("service-dns", this.kubernetesServiceDns);
 
         ClusterManager mgr = new HazelcastClusterManager(hazelcastConfig);
         VertxOptions options = new VertxOptions().setClusterManager(mgr);

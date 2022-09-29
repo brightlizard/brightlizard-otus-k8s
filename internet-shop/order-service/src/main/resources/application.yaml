@@ -48,3 +48,14 @@ management:
         http:
           server:
             requests: true
+
+ishop:
+  hz:
+    network:
+      multicast:
+        enabled: false
+      tcpip:
+        enabled: false
+      kubernetes:
+        enabled: true
+        servicedns: k8s-dicovery-headless-service.otus.svc.cluster.local

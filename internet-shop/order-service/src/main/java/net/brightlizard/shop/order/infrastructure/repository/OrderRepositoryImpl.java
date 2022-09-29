@@ -118,12 +118,26 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public Order updateStatus(Order order) {
         String SQL = "UPDATE internet_shop.public.order " +
-                "SET status = ? " +
+                "SET status = ?" +
                 "WHERE id = ?";
         jdbcTemplate.update(
             SQL,
             order.getStatus().toString(),
             order.getId()
+        );
+
+        return order;
+    }
+
+    @Override
+    public Order updateCommStatus(Order order) {
+        String SQL = "UPDATE internet_shop.public.order " +
+                "SET commstatus = ?" +
+                "WHERE id = ?";
+        jdbcTemplate.update(
+                SQL,
+                order.getCommStatus().toString(),
+                order.getId()
         );
 
         return order;

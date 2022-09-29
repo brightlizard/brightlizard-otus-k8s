@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "otus-internet-shop-app.fullname" . }}
+  labels:
+    {{- include "otus-internet-shop-app.labels" . | nindent 4 }}
+    component: k8s-dicovery
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "otus-internet-shop-app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "otus-internet-shop-app.selectorLabels" . | nindent 8 }}
+        component: k8s-dicovery
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "otus-internet-shop-app.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "otus-internet-shop-app.fullname" . }}-config
+          ports:
+            - name: http
+              containerPort: 44441
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /actuator/info
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 300
+          readinessProbe:
+            httpGet:
+              path: /actuator/info
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 300
+#          volumeMounts:
+#            - name: init-db
+#              mountPath: "/db"
+#              readOnly: true
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+#      volumes:
+#        - name: init-db
+#          configMap:
+#            name: {{ include "otus-internet-shop-app.fullname" . }}-config
+#            items:
+#              - key: "init.sql"
+#                path: "init.sql"

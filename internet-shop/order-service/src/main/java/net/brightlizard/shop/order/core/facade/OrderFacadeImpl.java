@@ -1,6 +1,6 @@
 package net.brightlizard.shop.order.core.facade;
 
-import net.brightlizard.shop.order.core.OrderService;
+import net.brightlizard.shop.order.core.service.OrderService;
 import net.brightlizard.shop.order.core.model.Order;
 import net.brightlizard.shop.order.core.model.OrderStatus;
 import net.brightlizard.shop.order.core.model.RequestStatus;
@@ -29,11 +29,10 @@ public class OrderFacadeImpl implements OrderFacade {
         try {
             RequestStatus requestStatus = orderService.createRequest(order);
             if (requestStatus.equals(RequestStatus.ALREADY_EXIST)) {
-                LOGGER.info("ALREADY EXIST 2");
+                LOGGER.info("ALREADY EXIST");
                 return requestStatus;
             }
 
-            LOGGER.info("CREATED 2");
             OrderStatus orderStatus = orderService.createOrder(order);
 
             if(orderStatus.equals(OrderStatus.CREATED)){
